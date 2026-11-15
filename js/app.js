@@ -31,16 +31,17 @@
   function render() {
     if (!game || !board) { return; }
     var moves = game.history(), last = moves.length ? moves[moves.length - 1] : null;
-    var targets = [], legal, i, list, item, html, status = game.status();
-    if (selected && !status.ended) {
+    var targets = [], legal, i, list, item, html, status = game.status(), thinking = game.isComputerTurn();
+    if (selected && !status.ended && !thinking) {
       legal = game.legalFrom(selected);
       for (i = 0; i < legal.length; i++) {
         if (targets.indexOf(legal[i].to) === -1) { targets.push(legal[i].to); }
       }
     }
     board.render(game, selected, targets, last);
-    ID('game-status').textContent = status.text;
-    ID('btn-undo').disabled = moves.length === 0;
+    ID('game-status').textContent = thinking ? t('ai.thinking') : status.text;
+    ID('game-mode-label').textContent = game.mode === 'vs-computer' ? t('ai.gameTitle') + ' · ' + t('ai.level' + game.difficulty) : t('game.title');
+    ID('btn-undo').disabled = !game.canUndo();
     list = ID('moves-list'); list.innerHTML = '';
     for (i = Math.max(0, 2 * Math.ceil((moves.length - 16) / 2)); i < moves.length; i += 2) {
       item = document.createElement('li');
@@ -53,29 +54,50 @@
       item = document.createElement('li'); item.textContent = t('game.noMoves'); list.appendChild(item);
     }
   }
-  function start(newGame) {
-    if (newGame) {
-      if (Xake.Storage.savedGame() && !root.confirm(t('game.newConfirm'))) { return; }
-      game = new Xake.Game();
-    } else {
-      game = new Xake.Game();
-      if (!game.restore(Xake.Storage.savedGame())) { notice(t('storage.badGame')); saved(); return; }
+  function start(newGame, options) {
+    if (newGame && Xake.Storage.savedGame() && !root.confirm(t('game.newConfirm'))) { return; }
+    Xake.AI.cancel();
+    if (newGame) { game = new Xake.Game(options); }
+    else {
+      var restored = new Xake.Game();
+      if (!restored.restore(Xake.Storage.savedGame())) { notice(t('storage.badGame')); saved(); return; }
+      game = restored;
     }
     selected = null; modalMove = null;
     closePromotion();
-    board.flipped = false;
+    board.flipped = game.mode === 'vs-computer' && game.humanColor === 'b';
+    ID('ai-setup').className = 'setup-panel is-hidden';
     show('screen-game');
-    board.size();
-    render();
+    board.size(); render();
     if (newGame) { store(); }
     else { notice(''); }
+    maybeComputer();
+  }
+  function computerMove(move, expectedGame, expectedFen) {
+    if (!game || game !== expectedGame || !game.isComputerTurn() || game.engine.fen() !== expectedFen) { return; }
+    if (!move) {
+      // Respaldo legal para un Worker que no haya respondido a tiempo.
+      var options = game.engine.moves({ verbose: true });
+      if (options.length) { move = options[Math.floor(Math.random() * options.length)]; }
+    }
+    if (move && game.move(move.from, move.to, move.promotion)) {
+      selected = null; render(); store();
+    } else { notice(t('ai.failed')); render(); }
+  }
+  function maybeComputer() {
+    if (!game || !game.isComputerTurn()) { return; }
+    var expectedGame = game, expectedFen = game.engine.fen();
+    render();
+    Xake.AI.find(expectedFen, game.difficulty, function (move) {
+      computerMove(move, expectedGame, expectedFen);
+    });
   }
   function afterMove(from, to, promotion) {
     var result = game.move(from, to, promotion);
-    if (result) { selected = null; render(); store(); }
+    if (result) { selected = null; render(); store(); maybeComputer(); }
   }
   function chooseSquare(square) {
-    if (!game || modalMove || game.status().ended) { return; }
+    if (!game || modalMove || game.status().ended || game.isComputerTurn()) { return; }
     var p = game.engine.get(square), turn = game.engine.turn(), moves, choices = [], i;
     if (p && p.color === turn) {
       selected = selected === square ? null : square;
@@ -112,17 +134,34 @@
     ID('promotion-modal').className = 'modal';
     if (choices.firstChild) { choices.firstChild.focus(); }
   }
+  function exitGame() {
+    Xake.AI.cancel(); selected = null; closePromotion(); store(); saved(); show('screen-menu');
+  }
   function bind() {
-    ID('btn-new').onclick = function () { start(true); };
+    ID('btn-new').onclick = function () { start(true, { mode: 'local-two-players' }); };
+    ID('btn-new-ai').onclick = function () { ID('ai-setup').className = 'setup-panel'; };
+    ID('btn-ai-cancel').onclick = function () { ID('ai-setup').className = 'setup-panel is-hidden'; };
+    ID('btn-ai-start').onclick = function () {
+      var difficulty = Number(ID('ai-level').value), humanColor = ID('ai-color').value;
+      var prefs = Xake.Storage.preferences();
+      prefs.aiDifficulty = difficulty; prefs.humanColor = humanColor;
+      Xake.Storage.savePreferences(prefs);
+      start(true, { mode: 'vs-computer', difficulty: difficulty, humanColor: humanColor });
+    };
     ID('btn-continue').onclick = function () { start(false); };
-    ID('btn-menu').onclick = function () { selected = null; closePromotion(); store(); saved(); show('screen-menu'); };
-    ID('btn-save-exit').onclick = function () { selected = null; closePromotion(); store(); saved(); show('screen-menu'); };
+    ID('btn-menu').onclick = exitGame;
+    ID('btn-save-exit').onclick = exitGame;
     ID('btn-undo').onclick = function () {
-      if (game.undo()) { selected = null; closePromotion(); render(); store(); }
+      if (!game || !game.canUndo()) { return; }
+      Xake.AI.cancel();
+      if (game.undoTurn()) { selected = null; closePromotion(); render(); store(); maybeComputer(); }
     };
     ID('btn-flip').onclick = function () { board.flip(); render(); };
     ID('btn-restart').onclick = function () {
-      if (root.confirm(t('game.restartConfirm'))) { game.reset(); selected = null; closePromotion(); render(); store(); }
+      if (!game || !root.confirm(t('game.restartConfirm'))) { return; }
+      Xake.AI.cancel(); game.reset(); selected = null; closePromotion();
+      board.flipped = game.mode === 'vs-computer' && game.humanColor === 'b';
+      render(); store(); maybeComputer();
     };
     ID('btn-promotion-cancel').onclick = function () { closePromotion(); render(); };
     ID('language').onchange = function () {
@@ -139,8 +178,9 @@
     var prefs = Xake.Storage.preferences();
     Xake.I18n.init(prefs.language === 'eu' ? 'eu' : 'es', function () {
       board = new Xake.Board(ID('board'), chooseSquare);
-      translations(); bind(); saved();
-      show('screen-menu');
+      ID('ai-level').value = prefs.aiDifficulty >= 1 && prefs.aiDifficulty <= 4 ? String(prefs.aiDifficulty) : '1';
+      ID('ai-color').value = prefs.humanColor === 'b' ? 'b' : 'w';
+      translations(); bind(); saved(); show('screen-menu');
     });
   }
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); }

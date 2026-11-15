@@ -15,7 +15,7 @@
   function savedGame() {
     var data = read(KEY_GAME);
     if (!data || data.schemaVersion !== 1 || !data.current ||
-      data.current.mode !== 'local-two-players' ||
+      (data.current.mode !== 'local-two-players' && data.current.mode !== 'vs-computer') ||
       typeof data.current.initialFen !== 'string' || !Array.isArray(data.current.moves)) { return null; }
     return data.current;
   }

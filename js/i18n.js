@@ -4,9 +4,9 @@
   var Xake = root.Xake = root.Xake || {};
   var base = {
     'app.subtitle': 'Ajedrez a tu manera', 'menu.title': '¿Jugamos al ajedrez?',
-    'menu.intro': 'Una partida para dos personas en el mismo dispositivo.',
-    'menu.new': 'Nueva partida clásica', 'menu.continue': 'Continuar partida',
-    'menu.future': 'Próximamente: máquina, ejércitos y tableros personalizados.',
+    'menu.intro': 'Dos jugadores en el mismo dispositivo o contra la máquina.',
+    'menu.new': 'Dos jugadores', 'menu.continue': 'Continuar partida',
+    'menu.future': 'Próximamente: ejércitos y tableros personalizados.',
     'settings.language': 'Idioma', 'game.title': 'Partida clásica',
     'game.menu': 'Menú', 'game.controls': 'Controles', 'game.undo': 'Deshacer jugada',
     'game.flip': 'Girar tablero', 'game.restart': 'Reiniciar partida',
@@ -28,6 +28,20 @@
     'common.empty': 'vacía', 'common.white': 'blanco', 'common.black': 'negro',
     'game.square': 'Casilla {square}: {piece}', 'storage.failed': 'No se pudo guardar en este dispositivo.',
     'storage.badGame': 'La partida guardada no es válida y no se ha cargado.',
+    'ai.menu': 'Contra la máquina',
+    'ai.setupTitle': 'Nueva partida contra la máquina',
+    'ai.difficulty': 'Dificultad',
+    'ai.level1': 'Principiante',
+    'ai.level2': 'Fácil',
+    'ai.level3': 'Normal',
+    'ai.level4': 'Difícil',
+    'ai.yourColor': 'Jugar con',
+    'ai.white': 'Blancas (empiezas tú)',
+    'ai.black': 'Negras (empieza la máquina)',
+    'ai.start': 'Empezar partida',
+    'ai.gameTitle': 'Contra la máquina',
+    'ai.thinking': 'La máquina está pensando…',
+    'ai.failed': 'La máquina no ha podido completar la jugada.',
     'app.unavailable': 'No se ha podido iniciar el motor de ajedrez.'
   };
   var spanish = base;

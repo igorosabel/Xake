@@ -3,7 +3,11 @@
   'use strict';
   var Xake = root.Xake = root.Xake || {};
   var DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-  function Game() {
+  function Game(options) {
+    options = options || {};
+    this.mode = options.mode === 'vs-computer' ? 'vs-computer' : 'local-two-players';
+    this.difficulty = this.mode === 'vs-computer' ? Math.max(1, Math.min(4, Number(options.difficulty) || 1)) : null;
+    this.humanColor = this.mode === 'vs-computer' && options.humanColor === 'b' ? 'b' : 'w';
     this.initialFen = DEFAULT_FEN;
     this.engine = new Chess();
   }
@@ -19,16 +23,37 @@
   };
   Game.prototype.undo = function () { return this.engine.undo(); };
   Game.prototype.history = function () { return this.engine.history({ verbose: true }); };
+  Game.prototype.isComputerTurn = function () {
+    return this.mode === 'vs-computer' && this.engine.turn() !== this.humanColor && !this.status().ended;
+  };
+  Game.prototype.canUndo = function () {
+    var hist = this.history(), i;
+    if (this.mode !== 'vs-computer') { return hist.length > 0; }
+    for (i = 0; i < hist.length; i++) { if (hist[i].color === this.humanColor) { return true; } }
+    return false;
+  };
+  Game.prototype.undoTurn = function () {
+    if (!this.canUndo()) { return false; }
+    if (this.mode !== 'vs-computer') { return !!this.undo(); }
+    do { this.undo(); }
+    while (this.history().length && this.engine.turn() !== this.humanColor);
+    return true;
+  };
   Game.prototype.snapshot = function () {
     var hist = this.history(), moves = [], i;
     for (i = 0; i < hist.length; i++) {
       moves.push({ from: hist[i].from, to: hist[i].to, promotion: hist[i].promotion || null });
     }
-    return { initialFen: this.initialFen, mode: 'local-two-players', difficulty: null,
-      humanColor: null, whiteAppearance: 'classic', blackAppearance: 'classic', moves: moves };
+    return { initialFen: this.initialFen, mode: this.mode, difficulty: this.difficulty,
+      humanColor: this.mode === 'vs-computer' ? this.humanColor : null,
+      whiteAppearance: 'classic', blackAppearance: 'classic', moves: moves };
   };
   Game.prototype.restore = function (saved) {
     if (!saved || typeof saved.initialFen !== 'string' || !Array.isArray(saved.moves) || saved.moves.length > 10000) { return false; }
+    if (saved.mode !== 'local-two-players' && saved.mode !== 'vs-computer') { return false; }
+    if (saved.mode === 'vs-computer' &&
+      (saved.humanColor !== 'w' && saved.humanColor !== 'b' ||
+        typeof saved.difficulty !== 'number' || !isFinite(saved.difficulty) || Math.floor(saved.difficulty) !== saved.difficulty || saved.difficulty < 1 || saved.difficulty > 4)) { return false; }
     var chess, i, m, replay;
     try {
       chess = new Chess();
@@ -41,6 +66,9 @@
         if (!replay) { return false; }
       }
     } catch (e) { return false; }
+    this.mode = saved.mode;
+    this.difficulty = saved.mode === 'vs-computer' ? saved.difficulty : null;
+    this.humanColor = saved.mode === 'vs-computer' ? saved.humanColor : 'w';
     this.initialFen = saved.initialFen;
     this.engine = chess;
     return true;

@@ -62,3 +62,9 @@ h2 { font-size: 17px; margin-bottom: 14px; }
   .game-heading { margin-bottom: 5px; }
   .game-heading h1 { font-size: 20px; }
 }
+/* Preparación de partidas contra la máquina, sin CSS Grid ni variables CSS. */
+.setup-panel { margin: 16px 0 8px; padding: 16px; border: 1px solid #b1c7b8; border-radius: 12px; text-align: left; background: #f5f9f5; }
+.setup-panel h2 { margin-bottom: 12px; }
+.setup-panel label { display: block; margin: 11px 0 6px; font-weight: 600; font-size: 15px; }
+.setup-panel select { display: block; width: 100%; min-height: 46px; border-radius: 8px; padding: 8px; border: 1px solid #a7b9ab; background: #fff; }
+.setup-panel .btn-primary { margin-top: 17px; }
