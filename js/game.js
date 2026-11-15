@@ -8,12 +8,17 @@
     this.mode = options.mode === 'vs-computer' ? 'vs-computer' : 'local-two-players';
     this.difficulty = this.mode === 'vs-computer' ? Math.max(1, Math.min(4, Number(options.difficulty) || 1)) : null;
     this.humanColor = this.mode === 'vs-computer' && options.humanColor === 'b' ? 'b' : 'w';
-    this.initialFen = DEFAULT_FEN;
     this.engine = new Chess();
+    this.initialFen = DEFAULT_FEN;
+    if (typeof options.initialFen === 'string' && this.engine.load(options.initialFen)) {
+      this.initialFen = this.engine.fen();
+    }
+    this.scenarioId = typeof options.scenarioId === 'string' ? options.scenarioId : null;
+    this.scenarioName = typeof options.scenarioName === 'string' ? options.scenarioName.slice(0, 60) : null;
   }
   Game.prototype.reset = function () {
-    this.initialFen = DEFAULT_FEN;
     this.engine = new Chess();
+    this.engine.load(this.initialFen);
   };
   Game.prototype.legalFrom = function (square) {
     return this.engine.moves({ square: square, verbose: true });
@@ -44,7 +49,8 @@
     for (i = 0; i < hist.length; i++) {
       moves.push({ from: hist[i].from, to: hist[i].to, promotion: hist[i].promotion || null });
     }
-    return { initialFen: this.initialFen, mode: this.mode, difficulty: this.difficulty,
+    return { initialFen: this.initialFen, scenarioId: this.scenarioId,
+      scenarioName: this.scenarioName, mode: this.mode, difficulty: this.difficulty,
       humanColor: this.mode === 'vs-computer' ? this.humanColor : null,
       whiteAppearance: 'classic', blackAppearance: 'classic', moves: moves };
   };
@@ -70,6 +76,8 @@
     this.difficulty = saved.mode === 'vs-computer' ? saved.difficulty : null;
     this.humanColor = saved.mode === 'vs-computer' ? saved.humanColor : 'w';
     this.initialFen = saved.initialFen;
+    this.scenarioId = typeof saved.scenarioId === 'string' ? saved.scenarioId : null;
+    this.scenarioName = typeof saved.scenarioName === 'string' ? saved.scenarioName.slice(0, 60) : null;
     this.engine = chess;
     return true;
   };

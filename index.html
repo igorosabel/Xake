@@ -14,6 +14,7 @@
           href="css/main.css">
     <link rel="stylesheet"
           href="css/board.css">
+    <link rel="stylesheet" href="css/editor.css">
   </head>
 
   <body>
@@ -70,6 +71,10 @@
                       type="button"
                       data-i18n="common.cancel">Cancelar</button>
             </div>
+            <button id="btn-open-editor" class="btn btn-large" type="button"
+                    data-i18n="editor.menu">Crear tablero</button>
+            <button id="btn-open-library" class="btn btn-large" type="button"
+                    data-i18n="library.menu">Mis tableros</button>
             <button id="btn-continue"
                     class="btn btn-large is-hidden"
                     type="button"
@@ -141,6 +146,124 @@
             </aside>
           </div>
         </section>
+        <section id="screen-editor" class="screen is-hidden">
+          <div class="game-heading">
+            <div><h1 data-i18n="editor.title">Crear tablero</h1>
+              <p id="editor-step-label" class="game-status"></p></div>
+            <button id="btn-editor-menu" class="btn btn-quiet" type="button"
+                    data-i18n="game.menu">Menú</button>
+          </div>
+          <div id="editor-step-1" class="editor-step">
+            <div class="panel">
+              <h2 data-i18n="editor.stepArmies">1. Elige las piezas</h2>
+              <p data-i18n="editor.armyHint">Prepara las piezas de cada jugador. El rey es obligatorio.</p>
+              <div class="editor-color-tabs" role="group">
+                <button id="btn-editor-white" class="btn" type="button" data-i18n="editor.whites">Blancas</button>
+                <button id="btn-editor-black" class="btn" type="button" data-i18n="editor.blacks">Negras</button>
+              </div>
+              <div id="editor-army-counts" class="army-counts"></div>
+              <p id="editor-army-total" class="editor-subtext"></p>
+              <div class="editor-toolbar">
+                <button id="btn-army-classic" class="btn" type="button" data-i18n="editor.classicArmy">Ejército clásico</button>
+                <button id="btn-army-empty" class="btn" type="button" data-i18n="editor.emptyArmy">Solo el rey</button>
+              </div>
+              <div class="editor-army-library">
+                <h2 data-i18n="editor.savedArmies">Ejércitos guardados</h2>
+                <label for="editor-army-saved" data-i18n="editor.loadArmy">Cargar ejército</label>
+                <select id="editor-army-saved"><option value="">—</option></select>
+                <div class="editor-toolbar">
+                  <button id="btn-army-load" class="btn" type="button" data-i18n="editor.load">Cargar</button>
+                  <button id="btn-army-save" class="btn" type="button" data-i18n="editor.saveArmy">Guardar ejército</button>
+                  <button id="btn-army-duplicate" class="btn" type="button" data-i18n="editor.duplicateArmy">Guardar copia</button>
+                  <button id="btn-army-delete" class="btn" type="button" data-i18n="editor.deleteArmy">Eliminar guardado</button>
+                </div>
+              </div>
+              <button id="btn-editor-next-1" class="btn btn-primary editor-next" type="button"
+                      data-i18n="editor.next">Siguiente</button>
+            </div>
+          </div>
+          <div id="editor-step-2" class="editor-step is-hidden">
+            <div class="editor-layout">
+              <div class="board-container">
+                <div id="editor-board" class="chess-board" role="group" aria-label="Editor de ajedrez"></div>
+              </div>
+              <aside class="game-sidebar">
+                <div class="panel">
+                  <h2 data-i18n="editor.stepPlace">2. Coloca las piezas</h2>
+                  <p class="editor-subtext" data-i18n="editor.placeHint">Elige una pieza y toca una casilla. Para moverla, tócala y elige su destino.</p>
+                  <div class="editor-color-tabs">
+                    <button id="btn-place-white" class="btn" type="button" data-i18n="editor.whites">Blancas</button>
+                    <button id="btn-place-black" class="btn" type="button" data-i18n="editor.blacks">Negras</button>
+                  </div>
+                  <div id="editor-palette" class="editor-palette"></div>
+                  <p id="editor-left-count" class="editor-subtext"></p>
+                  <div class="button-stack">
+                    <button id="btn-editor-remove" class="btn" type="button" data-i18n="editor.remove">Retirar seleccionada</button>
+                    <button id="btn-editor-undo" class="btn" type="button" data-i18n="editor.undo">Deshacer</button>
+                    <button id="btn-editor-redo" class="btn" type="button" data-i18n="editor.redo">Rehacer</button>
+                    <button id="btn-editor-auto" class="btn" type="button" data-i18n="editor.auto">Distribuir automáticamente</button>
+                    <button id="btn-editor-clear" class="btn" type="button" data-i18n="editor.clear">Vaciar tablero</button>
+                  </div>
+                </div>
+              </aside>
+            </div>
+            <div class="editor-toolbar editor-navigation">
+              <button id="btn-editor-back-2" class="btn" type="button" data-i18n="editor.back">Volver</button>
+              <button id="btn-editor-next-2" class="btn btn-primary" type="button" data-i18n="editor.next">Siguiente</button>
+            </div>
+          </div>
+          <div id="editor-step-3" class="editor-step is-hidden">
+            <div class="panel editor-finish">
+              <h2 data-i18n="editor.stepSave">3. Comprueba y guarda</h2>
+              <label for="editor-scenario-name" data-i18n="editor.boardName">Nombre del tablero</label>
+              <input id="editor-scenario-name" type="text" maxlength="60" autocomplete="off" placeholder="Mi tablero especial">
+              <label for="editor-first" data-i18n="editor.whoStarts">Quién empieza</label>
+              <select id="editor-first">
+                <option value="w" data-i18n="editor.whites">Blancas</option>
+                <option value="b" data-i18n="editor.blacks">Negras</option>
+              </select>
+              <p id="editor-scenario-summary" class="editor-subtext"></p>
+              <p id="editor-validation" class="editor-validation" aria-live="polite"></p>
+              <div class="editor-toolbar">
+                <button id="btn-editor-back-3" class="btn" type="button" data-i18n="editor.back">Volver</button>
+                <button id="btn-editor-save" class="btn" type="button" data-i18n="editor.saveBoard">Guardar tablero</button>
+                <button id="btn-editor-save-play" class="btn btn-primary" type="button" data-i18n="editor.savePlay">Guardar y jugar</button>
+              </div>
+            </div>
+          </div>
+          <p id="editor-message" class="editor-message" role="status" aria-live="polite"></p>
+        </section>
+        <section id="screen-library" class="screen is-hidden">
+          <div class="game-heading">
+            <div><h1 data-i18n="library.title">Mis tableros</h1>
+              <p data-i18n="library.hint">Elige un tablero para jugar o editarlo.</p></div>
+            <button id="btn-library-menu" class="btn btn-quiet" type="button" data-i18n="game.menu">Menú</button>
+          </div>
+          <div class="panel">
+            <button id="btn-library-create" class="btn btn-primary" type="button" data-i18n="editor.menu">Crear tablero</button>
+            <div id="library-scenarios" class="library-scenarios"></div>
+          </div>
+          <div id="library-ai-setup" class="panel is-hidden">
+            <h2 data-i18n="library.aiTitle">Jugar contra la máquina</h2>
+            <p id="library-ai-scenario"></p>
+            <label for="library-ai-level" data-i18n="ai.difficulty">Dificultad</label>
+            <select id="library-ai-level">
+              <option value="1" data-i18n="ai.level1">Principiante</option>
+              <option value="2" data-i18n="ai.level2">Fácil</option>
+              <option value="3" data-i18n="ai.level3">Normal</option>
+              <option value="4" data-i18n="ai.level4">Difícil</option>
+            </select>
+            <label for="library-ai-color" data-i18n="ai.yourColor">Jugar con</label>
+            <select id="library-ai-color">
+              <option value="w" data-i18n="editor.whites">Blancas</option>
+              <option value="b" data-i18n="editor.blacks">Negras</option>
+            </select>
+            <div class="editor-toolbar">
+              <button id="btn-library-ai-cancel" class="btn" type="button" data-i18n="common.cancel">Cancelar</button>
+              <button id="btn-library-ai-start" class="btn btn-primary" type="button" data-i18n="ai.start">Empezar partida</button>
+            </div>
+          </div>
+        </section>
       </main>
       <footer class="app-footer"><span id="notice"
               role="status"
@@ -168,6 +291,8 @@
     <script src="js/game.js"></script>
     <script src="js/board.js"></script>
     <script src="js/ai.js"></script>
+    <script src="js/editor.js"></script>
+    <script src="js/editor-ui.js"></script>
     <script src="js/app.js"></script>
   </body>
 

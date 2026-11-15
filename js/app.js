@@ -2,12 +2,14 @@
 (function (root) {
   'use strict';
   var Xake = root.Xake = root.Xake || {};
-  var game = null, board = null, selected = null, modalMove = null;
+  var game = null, board = null, editorUI = null, selected = null, modalMove = null;
   var ID = function (id) { return document.getElementById(id); };
   function t(key) { return Xake.I18n.t(key); }
   function show(id) {
-    ID('screen-menu').className = 'screen' + (id === 'screen-menu' ? '' : ' is-hidden');
-    ID('screen-game').className = 'screen' + (id === 'screen-game' ? '' : ' is-hidden');
+    var screens = ['screen-menu', 'screen-game', 'screen-editor', 'screen-library'], i;
+    for (i = 0; i < screens.length; i++) {
+      ID(screens[i]).className = 'screen' + (id === screens[i] ? '' : ' is-hidden');
+    }
   }
   function notice(text) { ID('notice').textContent = text || ''; }
   function translations() {
@@ -18,6 +20,7 @@
     document.documentElement.lang = Xake.I18n.language();
     ID('language').value = Xake.I18n.language();
     if (game && board) { render(); }
+    if (editorUI) { editorUI.languageChanged(); }
   }
   function saved() {
     ID('btn-continue').className = 'btn btn-large' + (Xake.Storage.savedGame() ? '' : ' is-hidden');
@@ -31,7 +34,8 @@
   function render() {
     if (!game || !board) { return; }
     var moves = game.history(), last = moves.length ? moves[moves.length - 1] : null;
-    var targets = [], legal, i, list, item, html, status = game.status(), thinking = game.isComputerTurn();
+    var targets = [], legal, i, list, item, html, startIndex, blackStart;
+    var status = game.status(), thinking = game.isComputerTurn();
     if (selected && !status.ended && !thinking) {
       legal = game.legalFrom(selected);
       for (i = 0; i < legal.length; i++) {
@@ -40,14 +44,23 @@
     }
     board.render(game, selected, targets, last);
     ID('game-status').textContent = thinking ? t('ai.thinking') : status.text;
-    ID('game-mode-label').textContent = game.mode === 'vs-computer' ? t('ai.gameTitle') + ' · ' + t('ai.level' + game.difficulty) : t('game.title');
+    ID('game-mode-label').textContent = (game.scenarioName || (game.mode === 'vs-computer' ? t('ai.gameTitle') : t('game.title'))) + (game.mode === 'vs-computer' ? ' · ' + t('ai.level' + game.difficulty) : '');
     ID('btn-undo').disabled = !game.canUndo();
     list = ID('moves-list'); list.innerHTML = '';
-    for (i = Math.max(0, 2 * Math.ceil((moves.length - 16) / 2)); i < moves.length; i += 2) {
+    blackStart = game.initialFen.split(' ')[1] === 'b';
+    startIndex = Math.max(0, moves.length - 16);
+    if (blackStart && startIndex > 0 && startIndex % 2 === 0) { startIndex++; }
+    if (!blackStart && startIndex % 2 !== 0) { startIndex++; }
+    if (blackStart && startIndex === 0 && moves.length) {
+      item = document.createElement('li'); item.value = 1;
+      item.textContent = '... ' + moves[0].san; list.appendChild(item);
+      startIndex = 1;
+    }
+    for (i = startIndex; i < moves.length; i += 2) {
       item = document.createElement('li');
-      html = (moves[i] ? moves[i].san : '') + (moves[i + 1] ? '  ' + moves[i + 1].san : '');
+      html = moves[i].san + (moves[i + 1] ? '  ' + moves[i + 1].san : '');
       item.textContent = html;
-      item.value = Math.floor(i / 2) + 1;
+      item.value = blackStart ? Math.floor((i + 1) / 2) + 1 : Math.floor(i / 2) + 1;
       list.appendChild(item);
     }
     if (!moves.length) {
@@ -139,6 +152,8 @@
   }
   function bind() {
     ID('btn-new').onclick = function () { start(true, { mode: 'local-two-players' }); };
+    ID('btn-open-editor').onclick = function () { editorUI.open(); };
+    ID('btn-open-library').onclick = function () { editorUI.openLibrary(); };
     ID('btn-new-ai').onclick = function () { ID('ai-setup').className = 'setup-panel'; };
     ID('btn-ai-cancel').onclick = function () { ID('ai-setup').className = 'setup-panel is-hidden'; };
     ID('btn-ai-start').onclick = function () {
@@ -178,6 +193,11 @@
     var prefs = Xake.Storage.preferences();
     Xake.I18n.init(prefs.language === 'eu' ? 'eu' : 'es', function () {
       board = new Xake.Board(ID('board'), chooseSquare);
+      editorUI = new Xake.EditorUI(show, function (scenario, settings) {
+        start(true, { mode: settings.mode, humanColor: settings.humanColor,
+          difficulty: settings.difficulty, initialFen: scenario.initialFen,
+          scenarioId: scenario.id, scenarioName: scenario.name });
+      });
       ID('ai-level').value = prefs.aiDifficulty >= 1 && prefs.aiDifficulty <= 4 ? String(prefs.aiDifficulty) : '1';
       ID('ai-color').value = prefs.humanColor === 'b' ? 'b' : 'w';
       translations(); bind(); saved(); show('screen-menu');

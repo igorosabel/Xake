@@ -84,5 +84,26 @@
       }
     }
   };
+  /* Render del editor: acepta tableros incompletos sin construir un Game. */
+  Board.prototype.renderEditor = function (editor, selectedSquare) {
+    var r, f, i, square, cell, piece, className;
+    for (r = 0; r < 8; r++) {
+      for (f = 0; f < 8; f++) {
+        i = r * 8 + f; square = this.squareFor(r, f);
+        cell = this.squares[i]; piece = editor.get(square);
+        className = 'board-square ' + ((r + f) % 2 === 0 ? 'light' : 'dark');
+        if (piece) { className += ' occupied'; }
+        if (square === selectedSquare) { className += ' selected'; }
+        cell.button.className = className;
+        cell.piece.className = 'board-piece ' + (piece && piece.color === 'w' ? 'white' : 'black');
+        cell.piece.textContent = piece ? glyphs[piece.color + piece.type] : '';
+        cell.label.textContent = (r === 7 ? square.charAt(0) : '') + (f === 0 ? square.charAt(1) : '');
+        cell.button.setAttribute('aria-label', Xake.I18n.t('game.square', { square: square,
+          piece: piece ? Xake.I18n.t(names[piece.type]) + ' ' + Xake.I18n.t(piece.color === 'w' ? 'common.white' : 'common.black') : Xake.I18n.t('common.empty') }));
+      }
+    }
+  };
+  Board.glyphs = glyphs;
+  Board.names = names;
   Xake.Board = Board;
 }(window));
