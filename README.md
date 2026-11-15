@@ -74,3 +74,11 @@ Actualmente son **52 pruebas** (16 + 14 + 22). Se ejecutan con Node.js solo en d
 Quedan por incorporar: **apariencias de piezas** seleccionables por bando, exportación/importación de ejércitos y tableros, biblioteca de varias partidas guardadas y el modo Retos. Primero conviene probar el Hito 3 en el iPad 3, especialmente la colocación manual, las posiciones con muchas piezas y las partidas personalizadas contra la máquina.
 
 Documento original de diseño funcional: `docs/Xake_diseno_funcional_v0_3.md`. Estado de este bloque y recomendaciones de continuidad: `docs/estado-hito3.md`.
+
+## Hito 5 — Retos de una jugada
+
+Desde **Retos** se pueden resolver seis ejercicios incluidos (dar jaque, capturar una reina o conseguir jaque mate), pedir una pista y ganar entre 1 y 3 estrellas. También se pueden crear retos con tableros personalizados que tengan al menos una solución legal en **una sola jugada**.
+
+Los retos creados y las mejores puntuaciones se guardan localmente. Las copias JSON de **Mis tableros** incluyen los retos creados, pero no las puntuaciones; las copias anteriores siguen siendo compatibles. Las partidas clásicas y contra la máquina no se ven modificadas.
+
+Pruebas nuevas: `node tests/challenges.test.js` (además de las cinco baterías existentes). Ver `docs/pruebas-hito5.md`. La compatibilidad física con Safari de iOS 9 aún debe confirmarse con esta versión.

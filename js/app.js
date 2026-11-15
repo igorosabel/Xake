@@ -6,7 +6,7 @@
   var ID = function (id) { return document.getElementById(id); };
   function t(key) { return Xake.I18n.t(key); }
   function show(id) {
-    var screens = ['screen-menu', 'screen-game', 'screen-editor', 'screen-library'], i;
+    var screens = ['screen-menu', 'screen-game', 'screen-editor', 'screen-library', 'screen-challenges'], i;
     for (i = 0; i < screens.length; i++) {
       ID(screens[i]).className = 'screen' + (id === screens[i] ? '' : ' is-hidden');
     }
@@ -21,6 +21,7 @@
     ID('language').value = Xake.I18n.language();
     if (game && board) { render(); }
     if (editorUI) { editorUI.languageChanged(); }
+    if (Xake.ChallengeUI) { Xake.ChallengeUI.languageChanged(); }
   }
   function saved() {
     ID('btn-continue').className = 'btn btn-large' + (Xake.Storage.savedGame() ? '' : ' is-hidden');
@@ -203,6 +204,7 @@
       translations(); bind(); saved(); show('screen-menu');
     });
   }
+  Xake.navigate = show;
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); }
   else { init(); }
 }(window));

@@ -1,11 +1,12 @@
 /* global window, document */
-/* Xake Hito 4 - copia e importación de ejércitos y tableros; ES5. */
+/* Xake - copia e importación de ejércitos, tableros y retos; ES5. */
 (function (root) {
   'use strict';
   var Xake = root.Xake = root.Xake || {};
   var FORMAT = 'xake-config';
   var TYPES = ['k', 'q', 'r', 'b', 'n', 'p'];
   var ARMY_KEY = 'xake:v1:armies', SCENARIO_KEY = 'xake:v1:scenarios';
+  var CHALLENGE_KEY = 'xake:v1:challenges';
   function t(key, vars) { return Xake.I18n.t(key, vars); }
   function isArray(a) { return Object.prototype.toString.call(a) === '[object Array]'; }
   function text(value) { return typeof value === 'string' ? value : ''; }
@@ -41,9 +42,12 @@
   }
   function exportData() {
     var a = Xake.Storage.armies(), s = Xake.Storage.scenarios(), i;
+    var challenges = Xake.Challenges ? Xake.Challenges.custom() : [];
     for (i = 0; i < a.length; i++) { if (!armyValid(a[i])) { throw Error('invalid-army'); } }
     for (i = 0; i < s.length; i++) { if (!scenarioValid(s[i])) { throw Error('invalid-scenario'); } }
-    var data = { format: FORMAT, schemaVersion: 1, exportedAt: new Date().toISOString(), armies: a, scenarios: s };
+    for (i = 0; i < challenges.length; i++) { if (!Xake.Challenges.valid(challenges[i])) { throw Error('invalid-challenge'); } }
+    var data = { format: FORMAT, schemaVersion: 1, exportedAt: new Date().toISOString(),
+      armies: a, scenarios: s, challenges: challenges };
     return JSON.stringify(data, null, 2);
   }
   function has(items, id) {
@@ -61,11 +65,16 @@
     var payload;
     try { payload = JSON.parse(jsonText); } catch (e) { throw Error('json'); }
     if (!payload || payload.format !== FORMAT || payload.schemaVersion !== 1 || !isArray(payload.armies) || !isArray(payload.scenarios)) { throw Error('format'); }
-    if (payload.armies.length > 250 || payload.scenarios.length > 250) { throw Error('size'); }
+    // Las copias anteriores al Hito 5 no contienen la colección challenges.
+    if (payload.challenges === undefined) { payload.challenges = []; }
+    if (!isArray(payload.challenges)) { throw Error('format'); }
+    if (payload.armies.length > 250 || payload.scenarios.length > 250 || payload.challenges.length > 250) { throw Error('size'); }
     var i, a, s, now = new Date().toISOString();
     var existingArmies = Xake.Storage.armies(), existingScenarios = Xake.Storage.scenarios();
-    var nextArmies = existingArmies.slice(), nextScenarios = existingScenarios.slice();
-    var remap = Object.create(null), inputIds = Object.create(null), newArmy, newScenario;
+    var existingChallenges = Xake.Challenges ? Xake.Challenges.custom() : [];
+    var nextArmies = existingArmies.slice(), nextScenarios = existingScenarios.slice(), nextChallenges = existingChallenges.slice();
+    var remap = Object.create(null), scenarioRemap = Object.create(null);
+    var inputIds = Object.create(null), newArmy, newScenario, newChallenge;
     /* Validar el paquete completo antes de escribir una sola clave. */
     for (i = 0; i < payload.armies.length; i++) {
       a = payload.armies[i];
@@ -88,25 +97,49 @@
       };
       if (idOk(s.whiteArmyId) && remap[s.whiteArmyId]) { newScenario.whiteArmyId = remap[s.whiteArmyId]; }
       if (idOk(s.blackArmyId) && remap[s.blackArmyId]) { newScenario.blackArmyId = remap[s.blackArmyId]; }
+      scenarioRemap[s.id] = newScenario.id;
       nextScenarios.push(newScenario);
     }
-    /* Una escritura por colección; ante errores se intenta restaurar ambas. */
-    var oldArmies, oldScenarios;
+    // Validar retos antes de modificar cualquier colección.
+    inputIds = Object.create(null);
+    for (i = 0; i < payload.challenges.length; i++) {
+      var challenge = payload.challenges[i];
+      if (!Xake.Challenges || !Xake.Challenges.valid(challenge) || inputIds[challenge.id]) { throw Error('challenge'); }
+      inputIds[challenge.id] = true;
+      newChallenge = {
+        id: uniqueId('challenge', nextChallenges, i + 1), name: challenge.name,
+        initialFen: challenge.initialFen, goal: challenge.goal,
+        createdAt: now, updatedAt: now
+      };
+      if (idOk(challenge.sourceScenarioId) && scenarioRemap[challenge.sourceScenarioId]) {
+        newChallenge.sourceScenarioId = scenarioRemap[challenge.sourceScenarioId];
+      }
+      nextChallenges.push(newChallenge);
+    }
+    /* Escribir una vez por colección; restaurar las anteriores ante cualquier fallo. */
+    var oldArmies, oldScenarios, oldChallenges;
     try {
       oldArmies = root.localStorage.getItem(ARMY_KEY);
       oldScenarios = root.localStorage.getItem(SCENARIO_KEY);
+      oldChallenges = root.localStorage.getItem(CHALLENGE_KEY);
       root.localStorage.setItem(ARMY_KEY, JSON.stringify({ schemaVersion: 1, items: nextArmies }));
       root.localStorage.setItem(SCENARIO_KEY, JSON.stringify({ schemaVersion: 1, items: nextScenarios }));
+      if (payload.challenges.length) {
+        root.localStorage.setItem(CHALLENGE_KEY, JSON.stringify({ schemaVersion: 1, items: nextChallenges }));
+      }
     } catch (e2) {
       try {
         if (oldArmies === null) { root.localStorage.removeItem(ARMY_KEY); }
         else if (oldArmies !== undefined) { root.localStorage.setItem(ARMY_KEY, oldArmies); }
         if (oldScenarios === null) { root.localStorage.removeItem(SCENARIO_KEY); }
         else if (oldScenarios !== undefined) { root.localStorage.setItem(SCENARIO_KEY, oldScenarios); }
+        if (oldChallenges === null) { root.localStorage.removeItem(CHALLENGE_KEY); }
+        else if (oldChallenges !== undefined) { root.localStorage.setItem(CHALLENGE_KEY, oldChallenges); }
       } catch (rollbackError) { /* Mostrar fallo; nunca anunciar éxito. */ }
       throw Error('storage');
     }
-    return { armies: payload.armies.length, scenarios: payload.scenarios.length };
+    return { armies: payload.armies.length, scenarios: payload.scenarios.length,
+      challenges: payload.challenges.length };
   }
   function el(tag, className, key, fallback) {
     var n = document.createElement(tag);
@@ -148,11 +181,11 @@
       if (!root.confirm(t('backup.importConfirm'))) { return; }
       try {
         var result = importData(importArea.value);
-        message(section, t('backup.imported', { armies: result.armies, scenarios: result.scenarios }), false);
+        message(section, t('backup.imported', { armies: result.armies, scenarios: result.scenarios, challenges: result.challenges }), false);
         var open = document.getElementById('btn-open-library');
         if (open) { open.click(); }
       } catch (e) {
-        var code = /^(json|format|size|army|scenario|storage)$/.test(e.message) ? e.message : 'format';
+        var code = /^(json|format|size|army|scenario|challenge|storage)$/.test(e.message) ? e.message : 'format';
         message(section, t('backup.error.' + code), true);
       }
     }));

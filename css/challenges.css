@@ -1,0 +1,29 @@
+/* Xake Hito 5: retos. Sin CSS Grid ni características modernas de Safari. */
+.challenge-group { margin-bottom: 22px; }
+.challenge-list { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap; margin: 0 -7px; }
+.challenge-item { width: calc(50% - 14px); min-width: 230px; padding: 14px; margin: 7px; border: 1px solid #b6cbb8; border-radius: 10px; background: #fff; }
+.challenge-item-heading { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-pack: justify; -webkit-justify-content: space-between; justify-content: space-between; }
+.challenge-stars { color: #aa7917; font-weight: 700; white-space: nowrap; margin-left: 6px; }
+.challenge-subtitle { font-size: 14px; color: #586d5f; margin: 8px 0 14px; }
+.challenge-actions { display: -webkit-box; display: -webkit-flex; display: flex; }
+.challenge-actions .btn { min-height: 42px; margin: 0 8px 0 0; width: auto; }
+.challenge-form { margin-top: 12px; }
+.challenge-form label { display: block; margin: 10px 0 5px; font-weight: 600; }
+.challenge-form select, .challenge-form input { display: block; width: 100%; min-height: 44px; padding: 8px; border: 1px solid #a9bba9; border-radius: 8px; background: #fff; font: inherit; }
+.challenge-form .btn { margin-top: 15px; }
+.challenge-message { font-size: 14px; color: #2c684b; margin-top: 14px; }
+.challenge-message.is-error { color: #ad382d; }
+.challenge-layout { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: start; -webkit-align-items: flex-start; align-items: flex-start; }
+.challenge-layout .board-container { width: 65%; }
+.challenge-layout .game-sidebar { min-width: 220px; }
+.challenge-result { font-size: 17px; font-weight: 700; }
+.challenge-result.is-success { color: #207346; }
+.challenge-result.is-error { color: #a63f31; }
+.challenge-promotion { margin-top: 15px; padding: 12px; border: 2px solid #ccad69; border-radius: 8px; }
+.challenge-promotion .btn { margin-top: 7px; }
+@media (max-width: 720px) {
+  .challenge-item { width: 100%; }
+  .challenge-layout { display: block; }
+  .challenge-layout .board-container { width: 100%; max-width: 560px; margin: 0 auto; }
+  .challenge-layout .game-sidebar { margin: 10px auto; }
+}
