@@ -1,0 +1,16 @@
+/* Xake Hito 4: estilos compatibles con Safari iOS 9. */
+.xake-appearance-panel { text-align: left; margin: 18px 0; padding: 13px; border: 1px solid #c1d4c7; background: #f7faf7; border-radius: 10px; }
+.xake-appearance-panel h2 { margin: 0 0 10px; font-size: 17px; }
+.xake-theme-row { margin: 8px 0; }
+.xake-theme-row label { display: block; margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+.xake-theme-row select { width: 100%; min-height: 44px; padding: 7px; border: 1px solid #a7b9ab; border-radius: 7px; background: #fff; }
+.xake-piece-image { text-shadow: none !important; }
+.palette-symbol.xake-piece-image, .army-glyph.xake-piece-image { display: inline-block; width: 39px; min-width: 39px; height: 39px; vertical-align: middle; }
+.xake-backup-panel { margin-top: 14px; }
+.xake-backup-panel h2 { margin: 0 0 8px; }
+.xake-backup-panel p { margin-bottom: 9px; }
+.xake-backup-panel .btn { margin: 6px 0 0; }
+.xake-backup-panel label { display: block; font-weight: 600; margin: 12px 0 5px; }
+.xake-backup-panel textarea { display: block; width: 100%; min-height: 135px; padding: 10px; font-family: monospace; font-size: 13px; resize: vertical; border: 1px solid #96ad9d; border-radius: 7px; -webkit-user-select: text; user-select: text; }
+.xake-backup-message { margin: 10px 0 0; font-size: 14px; color: #335743; }
+.xake-backup-message.is-error { color: #a03928; }
