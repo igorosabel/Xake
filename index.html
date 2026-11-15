@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable"
+          content="yes">
+    <meta name="theme-color"
+          content="#254638">
+    <title>Xake · Ajedrez a tu manera</title>
+    <link rel="stylesheet"
+          href="css/main.css">
+    <link rel="stylesheet"
+          href="css/board.css">
+  </head>
+
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="brand"><span class="brand-icon"
+                aria-hidden="true">♞</span><span>Xake</span></div>
+      </header>
+      <main>
+        <section id="screen-menu"
+                 class="screen">
+          <div class="welcome">
+            <div class="welcome-pieces"
+                 aria-hidden="true">♔ ♕ ♖ ♘</div>
+            <h1 data-i18n="menu.title">¿Jugamos al ajedrez?</h1>
+            <p data-i18n="menu.intro">Una partida para dos personas en el mismo dispositivo.</p>
+            <button id="btn-new"
+                    class="btn btn-primary btn-large"
+                    type="button"
+                    data-i18n="menu.new">Nueva partida clásica</button>
+            <button id="btn-continue"
+                    class="btn btn-large is-hidden"
+                    type="button"
+                    data-i18n="menu.continue">Continuar partida</button>
+            <div class="language-row">
+              <label for="language"
+                     data-i18n="settings.language">Idioma</label>
+              <select id="language"
+                      aria-label="Idioma">
+                <option value="es">Español</option>
+                <option value="eu">Euskara</option>
+              </select>
+            </div>
+            <p class="small-print"
+               data-i18n="menu.future">Próximamente: máquina, ejércitos y tableros personalizados.</p>
+          </div>
+        </section>
+        <section id="screen-game"
+                 class="screen is-hidden">
+          <div class="game-heading">
+            <div>
+              <h1 data-i18n="game.title">Partida clásica</h1>
+              <p id="game-status"
+                 class="game-status"
+                 aria-live="polite">Turno de las blancas</p>
+            </div>
+            <button id="btn-menu"
+                    class="btn btn-quiet"
+                    type="button"
+                    data-i18n="game.menu">Menú</button>
+          </div>
+          <div class="game-layout">
+            <div class="board-container">
+              <div id="board"
+                   class="chess-board"
+                   role="group"
+                   aria-label="Tablero de ajedrez"></div>
+              <p class="board-instruction"
+                 data-i18n="game.instruction">Toca una pieza y después una casilla marcada.</p>
+            </div>
+            <aside class="game-sidebar">
+              <div class="panel">
+                <h2 data-i18n="game.controls">Controles</h2>
+                <div class="button-stack">
+                  <button id="btn-undo"
+                          class="btn"
+                          type="button"
+                          data-i18n="game.undo">Deshacer jugada</button>
+                  <button id="btn-flip"
+                          class="btn"
+                          type="button"
+                          data-i18n="game.flip">Girar tablero</button>
+                  <button id="btn-restart"
+                          class="btn"
+                          type="button"
+                          data-i18n="game.restart">Reiniciar partida</button>
+                  <button id="btn-save-exit"
+                          class="btn btn-primary"
+                          type="button"
+                          data-i18n="game.saveExit">Guardar y salir</button>
+                </div>
+              </div>
+              <div class="panel moves-panel">
+                <h2 data-i18n="game.moves">Últimos movimientos</h2>
+                <ol id="moves-list"
+                    class="moves-list"></ol>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </main>
+      <footer class="app-footer"><span id="notice"
+              role="status"
+              aria-live="polite"></span></footer>
+    </div>
+    <div id="promotion-modal"
+         class="modal is-hidden"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="promotion-title">
+      <div class="modal-content">
+        <h2 id="promotion-title"
+            data-i18n="game.promote">¿En qué pieza se convierte el peón?</h2>
+        <div id="promotion-choices"
+             class="promotion-choices"></div>
+        <button id="btn-promotion-cancel"
+                class="btn"
+                type="button"
+                data-i18n="common.cancel">Cancelar</button>
+      </div>
+    </div>
+    <script src="lib/chess.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/board.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+
+</html>

@@ -1,0 +1,64 @@
+/* CSS sin Grid, variables CSS ni dependencias de Safari moderno. */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; color: #253a30; background: #edf2ec; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; font-size: 16px; }
+button, select { font: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+button:focus, select:focus { outline: 3px solid #e1b447; outline-offset: 2px; }
+button:disabled { cursor: default; opacity: .45; }
+.is-hidden { display: none !important; }
+.app-shell { max-width: 1160px; min-height: 100vh; margin: 0 auto; padding: 0 16px; }
+.app-header { height: 68px; background: #254638; color: #fff; margin: 0 -16px 20px; padding: 12px 24px; display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: center; -webkit-align-items: center; align-items: center; -webkit-box-pack: justify; -webkit-justify-content: space-between; justify-content: space-between; }
+.brand { font-size: 29px; font-weight: 700; letter-spacing: .3px; }
+.brand-icon { color: #f7cf70; margin-right: 9px; }
+.brand-subtitle { font-size: 14px; color: #e6f0e9; }
+h1, h2, p { margin-top: 0; }
+h1 { font-size: 26px; line-height: 1.2; }
+h2 { font-size: 17px; margin-bottom: 14px; }
+.welcome { max-width: 480px; margin: 45px auto; padding: 30px 25px; background: #fff; border-radius: 17px; text-align: center; box-shadow: 0 2px 18px rgba(22,51,31,.08); }
+.welcome-pieces { font-size: 45px; color: #37634d; margin-bottom: 14px; letter-spacing: 4px; }
+.welcome p { line-height: 1.4; }
+.btn { min-height: 46px; width: 100%; padding: 10px 14px; background: #fff; color: #254638; border: 2px solid #aac2b2; border-radius: 10px; font-weight: 600; }
+.btn + .btn { margin-top: 9px; }
+.btn-primary { background: #2c684b; border-color: #2c684b; color: #fff; }
+.btn-large { min-height: 54px; margin-top: 12px; font-size: 18px; }
+.btn-quiet { background: transparent; border-color: #829c8c; width: auto; min-width: 88px; }
+.language-row { margin: 24px 0 12px; display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: center; -webkit-align-items: center; align-items: center; -webkit-box-pack: center; -webkit-justify-content: center; justify-content: center; }
+.language-row label { margin-right: 12px; }
+.language-row select { min-height: 44px; border-radius: 8px; border: 1px solid #9fb8aa; background: #fff; padding: 6px 10px; }
+.small-print { font-size: 13px; color: #687d70; margin-top: 18px; }
+.game-heading { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-pack: justify; -webkit-justify-content: space-between; justify-content: space-between; -webkit-box-align: start; -webkit-align-items: flex-start; align-items: flex-start; margin-bottom: 13px; }
+.game-heading h1 { margin: 0 0 6px; }
+.game-status { font-size: 17px; font-weight: 600; color: #315d46; margin: 0; }
+.game-layout { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: start; -webkit-align-items: flex-start; align-items: flex-start; }
+.board-container { width: 65%; max-width: 580px; }
+.game-sidebar { -webkit-box-flex: 1; -webkit-flex: 1; flex: 1; min-width: 220px; margin-left: 20px; }
+.panel { padding: 16px; border-radius: 12px; background: #fff; margin-bottom: 14px; }
+.button-stack .btn { display: block; }
+.moves-list { margin: 0; padding-left: 29px; max-height: 160px; overflow-y: auto; line-height: 1.75; font-size: 15px; }
+.moves-list li { padding-left: 5px; }
+.board-instruction { margin: 12px 0; font-size: 14px; color: #5d6f62; }
+.app-footer { min-height: 36px; margin-top: 15px; font-size: 14px; color: #9c4a30; }
+.modal { position: fixed; z-index: 10; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,.7); text-align: center; overflow-y: auto; padding: 28px 12px; }
+.modal-content { background: #fff; padding: 23px; margin: 8vh auto 0; max-width: 430px; border-radius: 13px; }
+.promotion-choices { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-pack: justify; -webkit-justify-content: space-between; justify-content: space-between; margin: 18px 0; }
+.promotion-choice { display: block; width: 23%; min-height: 82px; padding: 8px 0; color: #244b37; font-size: 44px; border: 2px solid #9ebca5; border-radius: 10px; background: #f7f9f5; }
+.promotion-choice small { display: block; font-size: 12px; font-weight: 600; }
+@media (max-width: 720px) {
+  .app-shell { padding: 0 10px; }
+  .app-header { margin: 0 -10px 14px; padding: 10px 15px; height: 58px; }
+  .brand { font-size: 25px; }
+  .brand-subtitle { font-size: 12px; }
+  .welcome { margin: 20px auto; }
+  .game-layout { display: block; }
+  .board-container { width: 100%; max-width: 560px; margin: 0 auto; }
+  .game-sidebar { margin: 10px auto 0; max-width: 560px; }
+  .panel { padding: 13px; }
+  .game-heading h1 { font-size: 21px; }
+  .game-status { font-size: 15px; }
+}
+@media (max-height: 500px) and (min-width: 721px) {
+  .app-header { height: 54px; margin-bottom: 10px; }
+  .game-heading { margin-bottom: 5px; }
+  .game-heading h1 { font-size: 20px; }
+}
