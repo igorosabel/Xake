@@ -59,6 +59,8 @@
   function drawPiece(element, theme, color, type) {
     theme = safe(theme);
     if (theme === 'classic' || !type) {
+      // Una casilla vacía puede conservar el fondo PNG de una jugada anterior.
+      if (!type) { element.textContent = ''; }
       element.style.backgroundImage = 'none';
       element.style.backgroundPosition = '';
       element.style.backgroundRepeat = '';
@@ -80,10 +82,12 @@
         square = board.squareFor(row, col);
         cell = board.squares[row * 8 + col];
         piece = game ? game.engine.get(square) : null;
-        if (!piece || !cell) { continue; }
-        color = piece.color;
-        t = themeFor(game, color);
-        drawPiece(cell.piece, t, color, piece.type);
+        if (!cell) { continue; }
+        // Procesar las 64 casillas, incluidas las vacías: el render base no
+        // restablece backgroundImage al borrar una pieza.
+        color = piece ? piece.color : null;
+        t = piece ? themeFor(game, color) : 'classic';
+        drawPiece(cell.piece, t, color, piece ? piece.type : null);
       }
     }
   }
@@ -94,7 +98,9 @@
         square = board.squareFor(row, col);
         cell = board.squares[row * 8 + col];
         piece = editor.get(square);
-        if (piece && cell) { drawPiece(cell.piece, preference(piece.color), piece.color, piece.type); }
+        if (!cell) { continue; }
+        drawPiece(cell.piece, piece ? preference(piece.color) : 'classic',
+          piece ? piece.color : null, piece ? piece.type : null);
       }
     }
   }
