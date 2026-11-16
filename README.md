@@ -13,7 +13,9 @@ Juego web de ajedrez y retos pensado para niños, compatible con Safari de **iOS
 - **Hito 5:** seis retos de una jugada: dar jaque, capturar una reina y mate en uno; pistas, estrellas y creación desde tableros guardados.
 - **Hito 6:** tres retos de **mate en dos**; el rival responde automáticamente con una defensa legal. Para ganar hay que elegir una primera jugada que garantice mate tras **cualquier** respuesta y dar mate en el segundo turno. Se pueden crear desde tableros propios y guardar/exportar como los demás retos.
 
-Los hitos 1–5 han sido probados por el usuario en el iPad 3; el Hito 6 requiere todavía su comprobación física.
+- **Hito 7:** ayudas visuales configurables y panel de piezas capturadas, actualizados al mover, deshacer o cambiar de apariencia.
+
+Los hitos 1–6 han sido probados por el usuario en el iPad 3. El Hito 7 necesita su prueba física.
 
 ## Ejecución
 
@@ -25,19 +27,17 @@ python -m http.server 8000
 
 Visita `http://localhost:8000` o publica los archivos en un servidor estático HTTPS. No abras `index.html` con `file://`: los JSON de idiomas y el Worker necesitan HTTP(S).
 
-## Pruebas
+## Pruebas (un único comando)
+
+Desde la raíz del proyecto:
 
 ```bash
-node tests/chess.test.js
-node tests/ai.test.js
-node tests/editor.test.js
-node tests/hito4.test.js
-node tests/appearance-ghost.test.js
-node tests/challenges.test.js
-node tests/mate-two.test.js
+npm test
 ```
 
-Las **116 pruebas** (101 anteriores + 15 del Hito 6) usan Node.js solo en desarrollo. Ver los procedimientos manuales en `docs/pruebas-hito1.md` a `docs/pruebas-hito6.md`.
+Alternativamente, `node tests/run-tests.js`. No necesitas `npm install` ni dependencias npm. El ejecutor descubre automáticamente todos los archivos `tests/**/*.test.js`, los ejecuta uno por uno (aunque falle alguno), muestra un resumen y devuelve error si hay fallos.
+
+Con el Hito 7 son **131 pruebas automatizadas** (116 anteriores y 15 nuevas) repartidas en ocho archivos. Ver los procedimientos manuales en `docs/pruebas-hito1.md` a `docs/pruebas-hito7.md`.
 
 ## Hito 6: comportamiento y límites
 
@@ -55,10 +55,11 @@ Las **116 pruebas** (101 anteriores + 15 del Hito 6) usan Node.js solo en desarr
 - `js/editor.js`, `js/editor-ui.js`: ejércitos y tableros.
 - `js/appearance.js`: apariencias por color.
 - `js/challenges.js`, `js/challenge-ui.js`: retos y presentación.
+- `js/usability.js`, `css/usability.css`: opciones visuales y capturas, sin modificar el motor.
 - `js/mate-two.js`: análisis aislado de mate en dos con límites de complejidad y caché de resultados.
 - `js/storage.js`, `js/backup.js`: persistencia versionada en `localStorage` e importación/exportación.
 - `js/i18n.js`, `i18n/*.json`: interfaz multilingüe con respaldo al español.
 
 El almacenamiento es **local a cada dominio/dispositivo**: las partidas y los retos no se sincronizan. Exportar una copia JSON protege los ejércitos, tableros y retos creados, pero no incluye una partida activa ni la puntuación conseguida.
 
-**Continuidad:** `docs/estado-hito6.md`. Diseño inicial: `docs/Xake_diseno_funcional_v0_3.md`.
+**Continuidad:** `docs/estado-hito7.md`. Diseño inicial: `docs/Xake_diseno_funcional_v0_3.md`.

@@ -206,5 +206,13 @@
   "challenge.tooComplex": "Este tablero tiene demasiadas piezas o variantes para analizar un mate en dos en este dispositivo. Prueba uno con menos piezas.",
   "challenge.preset.mateTwo1": "Un paso adelante",
   "challenge.preset.mateTwo2": "Las dos torres",
-  "challenge.preset.mateTwo3": "El rey negro prepara el mate"
+  "challenge.preset.mateTwo3": "El rey negro prepara el mate",
+  "ux.title": "Ayudas del tablero",
+  "ux.destinations": "Marcar movimientos posibles",
+  "ux.lastMove": "Destacar última jugada",
+  "ux.coordinates": "Mostrar coordenadas",
+  "ux.captures": "Piezas capturadas",
+  "ux.byWhite": "Capturadas por las blancas",
+  "ux.byBlack": "Capturadas por las negras",
+  "ux.none": "Ninguna"
 }

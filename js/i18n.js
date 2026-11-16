@@ -66,16 +66,16 @@
   function validObject(value) { return !!value && typeof value === 'object' && !Array.isArray(value); }
   function init(code, callback) {
     language = code === 'eu' ? 'eu' : 'es';
-    request('i18n/es.json?v=6.0.0', function (es) {
+    request('i18n/es.json?v=7.0.0', function (es) {
       if (validObject(es)) { spanish = es; }
       if (language === 'es') { translated = {}; callback(); return; }
-      request('i18n/eu.json?v=6.0.0', function (eu) { translated = validObject(eu) ? eu : {}; callback(); });
+      request('i18n/eu.json?v=7.0.0', function (eu) { translated = validObject(eu) ? eu : {}; callback(); });
     });
   }
   function change(code, callback) {
     language = code === 'eu' ? 'eu' : 'es';
     if (language === 'es') { translated = {}; callback(); return; }
-    request('i18n/eu.json?v=6.0.0', function (eu) { translated = validObject(eu) ? eu : {}; callback(); });
+    request('i18n/eu.json?v=7.0.0', function (eu) { translated = validObject(eu) ? eu : {}; callback(); });
   }
   function t(key, values) {
     var template = translated[key] || spanish[key] || base[key] || key;

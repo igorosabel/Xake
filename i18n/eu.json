@@ -206,5 +206,13 @@
   "challenge.tooComplex": "Taula honek pieza edo aukera gehiegi ditu gailu honetan bi jokaldiko matea aztertzeko. Saiatu pieza gutxiagorekin.",
   "challenge.preset.mateTwo1": "Aurrerapauso bat",
   "challenge.preset.mateTwo2": "Bi dorreak",
-  "challenge.preset.mateTwo3": "Errege beltzaren matea"
+  "challenge.preset.mateTwo3": "Errege beltzaren matea",
+  "ux.title": "Taularen laguntzak",
+  "ux.destinations": "Mugimendu posibleak markatu",
+  "ux.lastMove": "Azken jokaldia nabarmendu",
+  "ux.coordinates": "Koordenatuak erakutsi",
+  "ux.captures": "Harrapatutako piezak",
+  "ux.byWhite": "Zuriek harrapatutakoak",
+  "ux.byBlack": "Beltzek harrapatutakoak",
+  "ux.none": "Bat ere ez"
 }
