@@ -1,0 +1,32 @@
+/* Xake Hito 9: aprender, CSS compatible con Safari iOS 9. */
+.learn-overview { margin-bottom: 18px; }
+.learn-overview > p { margin-bottom: 12px; color: #586d5f; }
+.learn-list { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap; margin: 0 -7px; }
+.learn-card { width: calc(50% - 14px); margin: 7px; padding: 13px; border: 1px solid #b6cbb8; border-radius: 10px; background: #f7faf7; }
+.learn-card-heading { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: center; -webkit-align-items: center; align-items: center; min-height: 58px; }
+.learn-card-symbol { width: 47px; min-width: 47px; font-size: 38px; text-align: center; color: #2d5744; }
+.learn-card-body { -webkit-box-flex: 1; -webkit-flex: 1; flex: 1; min-width: 0; padding-left: 8px; }
+.learn-card-body strong { display: block; margin-bottom: 4px; }
+.learn-card-description { display: block; color: #586d5f; font-size: 13px; line-height: 1.35; }
+.learn-card-state { display: inline-block; margin: 8px 0 8px; font-weight: 600; color: #6e6f63; font-size: 13px; }
+.learn-card-state.is-done { color: #207346; }
+.learn-card .btn { display: block; }
+.learn-layout { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: start; -webkit-align-items: flex-start; align-items: flex-start; }
+.learn-layout .board-container { width: 65%; }
+.learn-layout .game-sidebar { min-width: 220px; }
+.learn-explanation { font-size: 16px; line-height: 1.5; color: #30543f; }
+.learn-objective { padding: 10px; margin-bottom: 16px; border-left: 4px solid #d4a33a; background: #fbf4df; line-height: 1.4; }
+.learn-feedback { min-height: 26px; margin-top: 14px; font-weight: 600; color: #805d23; }
+.learn-feedback.is-error { color: #a63f31; }
+.learn-feedback.is-success { color: #207346; }
+.learn-promotion { margin-top: 14px; padding: 10px; border: 2px solid #ccad69; border-radius: 8px; }
+.learn-promotion .btn { margin-top: 7px; }
+.board-square.learn-hint-from { box-shadow: inset 0 0 0 4px #a76325; }
+.board-square.learn-hint-to { box-shadow: inset 0 0 0 4px #db8714; }
+.board-square.learn-hint-to:before { content: ''; position: absolute; top: 8%; right: 8%; width: 17%; height: 17%; background: #db8714; border-radius: 50%; z-index: 2; pointer-events: none; }
+@media (max-width: 720px) {
+  .learn-card { width: 100%; }
+  .learn-layout { display: block; }
+  .learn-layout .board-container { width: 100%; max-width: 560px; margin: 0 auto; }
+  .learn-layout .game-sidebar { margin: 10px auto; }
+}

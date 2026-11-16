@@ -6,7 +6,7 @@
   var ID = function (id) { return document.getElementById(id); };
   function t(key) { return Xake.I18n.t(key); }
   function show(id) {
-    var screens = ['screen-menu', 'screen-game', 'screen-editor', 'screen-library', 'screen-challenges', 'screen-saved-games'], i;
+    var screens = ['screen-menu', 'screen-game', 'screen-editor', 'screen-library', 'screen-challenges', 'screen-saved-games', 'screen-learn'], i;
     for (i = 0; i < screens.length; i++) {
       ID(screens[i]).className = 'screen' + (id === screens[i] ? '' : ' is-hidden');
     }
@@ -23,6 +23,7 @@
     if (editorUI) { editorUI.languageChanged(); }
     if (Xake.ChallengeUI) { Xake.ChallengeUI.languageChanged(); }
     if (Xake.SavedGamesUI) { Xake.SavedGamesUI.languageChanged(); }
+    if (Xake.LearnUI) { Xake.LearnUI.languageChanged(); }
   }
   function saved() {
     ID('btn-continue').className = 'btn btn-large' + (Xake.Storage.savedGame() ? '' : ' is-hidden');

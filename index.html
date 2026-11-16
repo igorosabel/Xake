@@ -18,6 +18,7 @@
       <link rel="stylesheet" href="css/appearance.css">
     <link rel="stylesheet" href="css/challenges.css?v=5.0.0">
     <link rel="stylesheet" href="css/usability.css?v=7.0.0">
+    <link rel="stylesheet" href="css/learn.css?v=9.0.0">
     <link rel="stylesheet" href="css/saved-games.css?v=8.0.0">
   </head>
 
@@ -79,6 +80,7 @@
                     data-i18n="editor.menu">Crear tablero</button>
             <button id="btn-open-library" class="btn btn-large" type="button"
                     data-i18n="library.menu">Mis tableros</button>
+            <button id="btn-open-learn" class="btn btn-large" type="button" data-i18n="learn.menu">Aprender</button>
             <button id="btn-open-challenges" class="btn btn-large" type="button" data-i18n="challenge.menu">Retos</button>
             <button id="btn-open-saved-games" class="btn btn-large" type="button" data-i18n="saved.menu">Mis partidas</button>
             <button id="btn-continue"
@@ -345,6 +347,54 @@
             </div>
           </div>
         </section>
+        <section id="screen-learn" class="screen is-hidden">
+          <div id="learn-list">
+            <div class="game-heading">
+              <div>
+                <h1 data-i18n="learn.title">Aprender ajedrez</h1>
+                <p id="learn-progress" class="game-status"></p>
+              </div>
+              <button id="learn-back-menu" class="btn btn-quiet" type="button" data-i18n="game.menu">Menú</button>
+            </div>
+            <div class="panel learn-overview">
+              <h2 data-i18n="learn.piecesTitle">Conoce las piezas</h2>
+              <p data-i18n="learn.intro">Practica cómo se mueven y capturan las piezas, a tu ritmo.</p>
+              <div id="learn-pieces" class="learn-list"></div>
+            </div>
+            <div class="panel learn-overview">
+              <h2 data-i18n="learn.specialTitle">Movimientos especiales</h2>
+              <div id="learn-special" class="learn-list"></div>
+            </div>
+          </div>
+          <div id="learn-play" class="is-hidden">
+            <div class="game-heading">
+              <div>
+                <h1 id="learn-current-title">Lección</h1>
+              </div>
+              <button id="learn-back-list" class="btn btn-quiet" type="button" data-i18n="learn.back">Lecciones</button>
+            </div>
+            <div class="learn-layout">
+              <div class="board-container">
+                <div id="learn-board" class="chess-board" role="group" aria-label="Tablero para aprender"></div>
+                <p class="board-instruction" data-i18n="learn.instruction">Toca la pieza y después una casilla marcada.</p>
+              </div>
+              <aside class="game-sidebar">
+                <div class="panel">
+                  <h2 data-i18n="learn.mission">Tu ejercicio</h2>
+                  <p id="learn-explanation" class="learn-explanation"></p>
+                  <p id="learn-objective" class="learn-objective"></p>
+                  <div class="button-stack">
+                    <button id="learn-hint" class="btn" type="button" data-i18n="learn.hint">Ver pista</button>
+                    <button id="learn-restart" class="btn" type="button" data-i18n="learn.restart">Volver a empezar</button>
+                    <button id="learn-next" class="btn btn-primary is-hidden" type="button" data-i18n="learn.next">Siguiente lección</button>
+                  </div>
+                  <div id="learn-promotion" class="is-hidden"></div>
+                  <p id="learn-feedback" class="learn-feedback" role="status" aria-live="polite"></p>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </section>
       </main>
       <footer class="app-footer"><span id="notice"
               role="status"
@@ -380,6 +430,8 @@
     <script src="js/mate-two.js?v=6.0.0"></script>
     <script src="js/challenges.js?v=6.0.0"></script>
     <script src="js/challenge-ui.js?v=6.0.0"></script>
+    <script src="js/learn.js?v=9.0.0"></script>
+    <script src="js/learn-ui.js?v=9.0.0"></script>
     <script src="js/usability.js?v=7.0.0"></script>
     <script src="js/saved-games-ui.js?v=8.0.0"></script>
   </body>
