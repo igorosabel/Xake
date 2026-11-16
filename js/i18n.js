@@ -42,7 +42,23 @@
     'ai.gameTitle': 'Contra la máquina',
     'ai.thinking': 'La máquina está pensando…',
     'ai.failed': 'La máquina no ha podido completar la jugada.',
-    'app.unavailable': 'No se ha podido iniciar el motor de ajedrez.'
+    'app.unavailable': 'No se ha podido iniciar el motor de ajedrez.',
+    'saved.menu': 'Mis partidas', 'saved.title': 'Mis partidas',
+    'saved.intro': 'Continúa, renombra o elimina tus partidas guardadas.',
+    'saved.rename': 'Cambiar nombre', 'saved.continue': 'Continuar',
+    'saved.delete': 'Eliminar', 'saved.empty': 'Todavía no tienes partidas guardadas. ¡Empieza una!',
+    'saved.active': 'Última partida', 'saved.finished': 'Finalizada',
+    'saved.inProgress': 'En curso', 'saved.modeTwo': 'Dos jugadores',
+    'saved.modeAI': 'Contra la máquina', 'saved.moves': 'Jugadas: {count}',
+    'saved.updated': 'Actualizada: {date}',
+    'saved.renamePrompt': 'Nuevo nombre para la partida:',
+    'saved.nameInvalid': 'El nombre debe tener entre 1 y 60 caracteres.',
+    'saved.deleteConfirm': '¿Eliminar la partida «{name}»? No se podrá recuperar.',
+    'saved.corrupt': 'Esta partida no se puede recuperar porque sus movimientos no son válidos.',
+    'saved.failed': 'No se han podido guardar los cambios.',
+    'saved.renamed': 'Nombre actualizado.', 'saved.deleted': 'Partida eliminada.',
+    'saved.current': 'Partida guardada: {name}',
+    'saved.defaultAI': 'Contra la máquina', 'saved.defaultClassic': 'Partida clásica'
   };
   var spanish = base;
   var translated = {};
@@ -66,16 +82,16 @@
   function validObject(value) { return !!value && typeof value === 'object' && !Array.isArray(value); }
   function init(code, callback) {
     language = code === 'eu' ? 'eu' : 'es';
-    request('i18n/es.json?v=7.0.0', function (es) {
+    request('i18n/es.json?v=8.0.0', function (es) {
       if (validObject(es)) { spanish = es; }
       if (language === 'es') { translated = {}; callback(); return; }
-      request('i18n/eu.json?v=7.0.0', function (eu) { translated = validObject(eu) ? eu : {}; callback(); });
+      request('i18n/eu.json?v=8.0.0', function (eu) { translated = validObject(eu) ? eu : {}; callback(); });
     });
   }
   function change(code, callback) {
     language = code === 'eu' ? 'eu' : 'es';
     if (language === 'es') { translated = {}; callback(); return; }
-    request('i18n/eu.json?v=7.0.0', function (eu) { translated = validObject(eu) ? eu : {}; callback(); });
+    request('i18n/eu.json?v=8.0.0', function (eu) { translated = validObject(eu) ? eu : {}; callback(); });
   }
   function t(key, values) {
     var template = translated[key] || spanish[key] || base[key] || key;

@@ -6,7 +6,7 @@
   var ID = function (id) { return document.getElementById(id); };
   function t(key) { return Xake.I18n.t(key); }
   function show(id) {
-    var screens = ['screen-menu', 'screen-game', 'screen-editor', 'screen-library', 'screen-challenges'], i;
+    var screens = ['screen-menu', 'screen-game', 'screen-editor', 'screen-library', 'screen-challenges', 'screen-saved-games'], i;
     for (i = 0; i < screens.length; i++) {
       ID(screens[i]).className = 'screen' + (id === screens[i] ? '' : ' is-hidden');
     }
@@ -22,15 +22,17 @@
     if (game && board) { render(); }
     if (editorUI) { editorUI.languageChanged(); }
     if (Xake.ChallengeUI) { Xake.ChallengeUI.languageChanged(); }
+    if (Xake.SavedGamesUI) { Xake.SavedGamesUI.languageChanged(); }
   }
   function saved() {
     ID('btn-continue').className = 'btn btn-large' + (Xake.Storage.savedGame() ? '' : ' is-hidden');
   }
   function store() {
     if (!game) { return; }
-    if (!Xake.Storage.saveGame(game.snapshot())) { notice(t('storage.failed')); }
+    if (!Xake.Storage.saveGame(game.snapshot(), game.status().ended)) { notice(t('storage.failed')); }
     else { notice(''); }
     saved();
+    if (Xake.SavedGamesUI) { Xake.SavedGamesUI.updateCurrentName(); }
   }
   function render() {
     if (!game || !board) { return; }
@@ -69,9 +71,8 @@
     }
   }
   function start(newGame, options) {
-    if (newGame && Xake.Storage.savedGame() && !root.confirm(t('game.newConfirm'))) { return; }
     Xake.AI.cancel();
-    if (newGame) { game = new Xake.Game(options); }
+    if (newGame) { game = new Xake.Game(options); Xake.Storage.beginGame(); }
     else {
       var restored = new Xake.Game();
       if (!restored.restore(Xake.Storage.savedGame())) { notice(t('storage.badGame')); saved(); return; }
@@ -85,6 +86,7 @@
     board.size(); render();
     if (newGame) { store(); }
     else { notice(''); }
+    if (Xake.SavedGamesUI) { Xake.SavedGamesUI.updateCurrentName(); }
     maybeComputer();
   }
   function computerMove(move, expectedGame, expectedFen) {

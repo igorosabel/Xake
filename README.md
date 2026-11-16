@@ -14,8 +14,9 @@ Juego web de ajedrez y retos pensado para niños, compatible con Safari de **iOS
 - **Hito 6:** tres retos de **mate en dos**; el rival responde automáticamente con una defensa legal. Para ganar hay que elegir una primera jugada que garantice mate tras **cualquier** respuesta y dar mate en el segundo turno. Se pueden crear desde tableros propios y guardar/exportar como los demás retos.
 
 - **Hito 7:** ayudas visuales configurables y panel de piezas capturadas, actualizados al mover, deshacer o cambiar de apariencia.
+- **Hito 8:** biblioteca **Mis partidas** para guardar varias partidas independientes, renombrarlas, continuarlas y eliminarlas. Migración automática de la antigua partida única sin borrar su copia histórica, y guardado automático de la partida seleccionada.
 
-Los hitos 1–6 han sido probados por el usuario en el iPad 3. El Hito 7 necesita su prueba física.
+Los hitos 1–7 han sido probados por el usuario en el iPad 3. El Hito 8 está pendiente de la prueba física.
 
 ## Ejecución
 
@@ -37,7 +38,7 @@ npm test
 
 Alternativamente, `node tests/run-tests.js`. No necesitas `npm install` ni dependencias npm. El ejecutor descubre automáticamente todos los archivos `tests/**/*.test.js`, los ejecuta uno por uno (aunque falle alguno), muestra un resumen y devuelve error si hay fallos.
 
-Con el Hito 7 son **131 pruebas automatizadas** (116 anteriores y 15 nuevas) repartidas en ocho archivos. Ver los procedimientos manuales en `docs/pruebas-hito1.md` a `docs/pruebas-hito7.md`.
+Con el Hito 8 son **155 pruebas automatizadas** (131 anteriores y 24 nuevas) repartidas en nueve archivos. Ver los procedimientos manuales en `docs/pruebas-hito1.md` a `docs/pruebas-hito8.md`.
 
 ## Hito 6: comportamiento y límites
 
@@ -58,8 +59,18 @@ Con el Hito 7 son **131 pruebas automatizadas** (116 anteriores y 15 nuevas) rep
 - `js/usability.js`, `css/usability.css`: opciones visuales y capturas, sin modificar el motor.
 - `js/mate-two.js`: análisis aislado de mate en dos con límites de complejidad y caché de resultados.
 - `js/storage.js`, `js/backup.js`: persistencia versionada en `localStorage` e importación/exportación.
+- `js/saved-games-ui.js`, `css/saved-games.css`: gestión de varias partidas guardadas.
 - `js/i18n.js`, `i18n/*.json`: interfaz multilingüe con respaldo al español.
 
 El almacenamiento es **local a cada dominio/dispositivo**: las partidas y los retos no se sincronizan. Exportar una copia JSON protege los ejércitos, tableros y retos creados, pero no incluye una partida activa ni la puntuación conseguida.
 
-**Continuidad:** `docs/estado-hito7.md`. Diseño inicial: `docs/Xake_diseno_funcional_v0_3.md`.
+**Continuidad:** `docs/estado-hito8.md`. Diseño inicial: `docs/Xake_diseno_funcional_v0_3.md`.
+
+## Hito 8: varias partidas guardadas
+
+- En el menú, **Mis partidas** muestra una biblioteca de partidas con nombre, modalidad, número de jugadas, fecha y estado.
+- La primera partida creada se denomina automáticamente (p. ej. «Partida clásica 1»); se puede **Cambiar nombre** desde la partida o la biblioteca.
+- Se guardan y actualizan automáticamente los movimientos de **cada** partida. «Continuar partida» abre la última seleccionada; «Mis partidas» permite cambiar a otra.
+- Los datos nuevos se almacenan en `xake:v2:games` con `schemaVersion: 2`. Si hay una partida antigua en `xake:v1:games`, se copia una sola vez al nuevo formato **sin borrar la clave anterior**. No borres manualmente el almacenamiento del navegador.
+- Se mantienen independientes las reglas y el FEN inicial de cada partida personalizada, la IA, sus niveles y las apariencias.
+- Las copias JSON del Hito 4/5 siguen incluyendo **ejércitos, escenarios y retos**, pero **no** partidas guardadas. No se ha implementado sincronización entre dispositivos.
