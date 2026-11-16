@@ -278,5 +278,15 @@
   "learn.goal.check": "Mugitu dorrea {from} laukitik {to} laukira xake emateko.",
   "learn.goal.castle": "Egin errokada motza: mugitu erregea {from} laukitik {to} laukira.",
   "learn.goal.promotion": "Eraman peoia {from} laukitik {to} laukira, eta aukeratu pieza berria.",
-  "learn.finish": "Amaitu"
+  "learn.finish": "Amaitu",
+  "polish.settingsTitle": "Ezarpenak",
+  "polish.resetTitle": "Erronken aurrerapena",
+  "polish.resetDescription": "Lortutako izarrak eta gainditutako erronken markak ezaba ditzakezu. Sortu dituzun erronkak gordeta geratuko dira.",
+  "polish.resetButton": "Egindako erronken emaitzak berrezarri",
+  "polish.resetConfirm": "Lortutako izarrak eta gainditutako erronkak ezabatu? Sortutako erronkak mantenduko dira.",
+  "polish.resetDone": "Erronken aurrerapena berrezarri da.",
+  "polish.tabList": "Partidako aukerak",
+  "polish.tabSettings": "Doikuntzak",
+  "polish.showCaptured": "Hartutako piezak erakutsi",
+  "polish.showMoves": "Azken mugimenduak"
 }

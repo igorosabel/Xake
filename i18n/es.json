@@ -278,5 +278,15 @@
   "learn.goal.check": "Mueve la torre desde {from} hasta {to} para dar jaque.",
   "learn.goal.castle": "Haz un enroque corto: mueve el rey desde {from} hasta {to}.",
   "learn.goal.promotion": "Lleva el peón desde {from} hasta {to} y elige su nueva pieza.",
-  "learn.finish": "Terminar"
+  "learn.finish": "Terminar",
+  "polish.settingsTitle": "Configuración",
+  "polish.resetTitle": "Progreso de los retos",
+  "polish.resetDescription": "Puedes borrar las estrellas y los retos completados. Tus retos personalizados seguirán guardados.",
+  "polish.resetButton": "Restablecer retos completados",
+  "polish.resetConfirm": "¿Borrar las puntuaciones y los retos completados? Los retos que has creado se conservarán.",
+  "polish.resetDone": "Progreso de los retos restablecido.",
+  "polish.tabList": "Opciones de la partida",
+  "polish.tabSettings": "Ajustes",
+  "polish.showCaptured": "Mostrar piezas capturadas",
+  "polish.showMoves": "Últimos movimientos"
 }

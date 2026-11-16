@@ -1,0 +1,37 @@
+/* Xake: ajustes, pestañas e iconos ligeros; Safari iOS 9 y navegadores modernos. */
+.xake-settings-content { max-width: 620px; margin: 0 auto; }
+.xake-settings-content .xake-appearance-panel { margin: 0 0 20px; }
+.xake-settings-content .language-row { justify-content: flex-start; -webkit-box-pack: start; -webkit-justify-content: flex-start; margin: 10px 0 25px; }
+.xake-reset-section { border-top: 1px solid #dce8de; padding-top: 17px; margin-top: 18px; }
+.xake-reset-section h2 { font-size: 18px; }
+.xake-reset-section p { color: #5e7264; font-size: 14px; line-height: 1.5; }
+.xake-reset-section .btn { max-width: 290px; }
+.xake-reset-message { color: #286744; font-weight: 600; min-height: 18px; }
+.xake-tabs { display: -webkit-box; display: -webkit-flex; display: flex; width: 100%; border-bottom: 2px solid #aac3b0; margin-bottom: 0; }
+.xake-tab { display: block; min-width: 0; min-height: 48px; -webkit-box-flex: 1; -webkit-flex: 1; flex: 1; padding: 7px 0; margin: 0 2px 0 0; border: 1px solid #b4c9b8; border-bottom: 0; border-radius: 8px 8px 0 0; background: #e2eae3; color: #30543c; cursor: pointer; }
+.xake-tab[aria-selected="true"] { background: #fff; border-color: #739a80; color: #226345; box-shadow: inset 0 3px #338362; }
+.xake-tab:focus { outline: 3px solid #e1b447; outline-offset: -3px; }
+.xake-svg-icon { display: inline-block; width: 24px; height: 24px; vertical-align: middle; line-height: 0; }
+.xake-svg-icon svg { display: block; width: 100%; height: 100%; }
+.xake-tabs-body { background: #fff; border-radius: 0 0 12px 12px; }
+.xake-tab-panel { padding: 12px; }
+.xake-tab-panel > .panel, .xake-tab-panel > .xake-appearance-panel { padding: 0; background: transparent; border: 0; border-radius: 0; margin: 0; }
+.xake-tab-panel h2 { margin: 0 0 10px; font-size: 17px; }
+.xake-tab-panel .xake-theme-row select { min-height: 46px; }
+.xake-tab-panel .ux-capture-row { min-height: 34px; }
+/* Centrado real de los signos + y - en los contadores de ejércitos. */
+.army-count-row .editor-count-btn { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: center; -webkit-align-items: center; align-items: center; -webkit-box-pack: center; -webkit-justify-content: center; justify-content: center; padding: 0; line-height: 1; -webkit-flex-shrink: 0; flex-shrink: 0; }
+/* Acciones principales a la izquierda, acciones secundarias en iconos a la derecha. */
+.scenario-actions, .saved-game-actions { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: center; -webkit-align-items: center; align-items: center; -webkit-flex-wrap: wrap; flex-wrap: wrap; margin: 0; }
+.xake-action-left, .xake-action-right { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: center; -webkit-align-items: center; align-items: center; }
+.xake-action-left { -webkit-flex-wrap: wrap; flex-wrap: wrap; }
+.xake-action-right { margin-left: auto; -webkit-flex-shrink: 0; flex-shrink: 0; }
+.scenario-actions .xake-action-left .btn, .saved-game-actions .xake-action-left .btn { -webkit-box-flex: 0; -webkit-flex: 0 0 auto; flex: 0 0 auto; min-width: 0; width: auto; margin: 3px 6px 3px 0; padding: 9px 12px; }
+.scenario-actions .xake-action-right .xake-icon-action, .saved-game-actions .xake-action-right .xake-icon-action { -webkit-box-flex: 0; -webkit-flex: 0 0 auto; flex: 0 0 auto; display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: center; -webkit-align-items: center; align-items: center; -webkit-box-pack: center; -webkit-justify-content: center; justify-content: center; width: 45px; min-width: 45px; height: 45px; min-height: 45px; padding: 7px; margin: 3px 0 3px 4px; }
+.scenario-actions .xake-icon-action:last-child, .saved-game-actions .xake-icon-action:last-child { border-color: #ca958c; color: #94382d; }
+@media (max-width: 720px) {
+  .xake-tab-panel { padding: 12px; }
+  .scenario-actions .xake-action-left .btn { font-size: 13px; padding: 8px 9px; }
+  .xake-action-right { margin-left: auto; }
+  .scenario-actions .xake-action-right .xake-icon-action, .saved-game-actions .xake-action-right .xake-icon-action { width: 43px; min-width: 43px; height: 43px; min-height: 43px; }
+}

@@ -203,15 +203,18 @@
       row.className = 'xake-theme-row'; label.htmlFor = select.id;
       row.appendChild(label); row.appendChild(select); div.appendChild(row);
       select.onchange = function () {
-        var theme = safe(this.value), ok = savedPreferences(color, theme);
-        if (!ok) { root.alert(Xake.I18n.t('storage.failed')); }
+        var theme = safe(this.value), ok = true;
+        if (!isGame) {
+          ok = savedPreferences(color, theme);
+          if (!ok) { root.alert(Xake.I18n.t('storage.failed')); }
+        }
         if (isGame && activeGame) {
           if (color === 'w') { activeGame.whiteAppearance = theme; }
           else { activeGame.blackAppearance = theme; }
           if (activeBoard && previousRender) { activeBoard.render.apply(activeBoard, previousRender); }
           if (!Xake.Storage.saveGame(activeGame.snapshot())) { root.alert(Xake.I18n.t('storage.failed')); }
         }
-        syncMenuSelectors();
+        if (!isGame) { syncMenuSelectors(); }
       };
     });
     return div;
