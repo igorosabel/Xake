@@ -63,6 +63,8 @@
   var spanish = base;
   var translated = {};
   var language = 'es';
+  // Descarta respuestas pendientes de un idioma que el usuario ya ha cambiado.
+  var requestVersion = 0;
   function request(url, callback) {
     var xhr = new XMLHttpRequest(), settled = false;
     function done(value) { if (!settled) { settled = true; callback(value); } }
@@ -81,17 +83,28 @@
   }
   function validObject(value) { return !!value && typeof value === 'object' && !Array.isArray(value); }
   function init(code, callback) {
+    var version = ++requestVersion;
     language = code === 'eu' ? 'eu' : 'es';
-    request('i18n/es.json?v=9.0.0', function (es) {
+    request('i18n/es.json?v=10.0.0', function (es) {
       if (validObject(es)) { spanish = es; }
+      if (version !== requestVersion) { return; }
       if (language === 'es') { translated = {}; callback(); return; }
-      request('i18n/eu.json?v=9.0.0', function (eu) { translated = validObject(eu) ? eu : {}; callback(); });
+      request('i18n/eu.json?v=10.0.0', function (eu) {
+        if (version !== requestVersion) { return; }
+        translated = validObject(eu) ? eu : {};
+        callback();
+      });
     });
   }
   function change(code, callback) {
+    var version = ++requestVersion;
     language = code === 'eu' ? 'eu' : 'es';
     if (language === 'es') { translated = {}; callback(); return; }
-    request('i18n/eu.json?v=9.0.0', function (eu) { translated = validObject(eu) ? eu : {}; callback(); });
+    request('i18n/eu.json?v=10.0.0', function (eu) {
+      if (version !== requestVersion) { return; }
+      translated = validObject(eu) ? eu : {};
+      callback();
+    });
   }
   function t(key, values) {
     var template = translated[key] || spanish[key] || base[key] || key;

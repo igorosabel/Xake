@@ -17,7 +17,7 @@ Juego web de ajedrez y retos pensado para niños, compatible con Safari de **iOS
 - **Hito 8:** biblioteca **Mis partidas** para guardar varias partidas independientes, renombrarlas, continuarlas y eliminarlas. Migración automática de la antigua partida única sin borrar su copia histórica, y guardado automático de la partida seleccionada.
 - **Hito 9:** modo **Aprender** con 15 ejercicios táctiles: movimientos, capturas, jaque, enroque y promoción. Progreso independiente en el navegador, instrucciones en español y euskera.
 
-Los hitos 1–8 están probados por el usuario en el iPad 3. El Hito 9 queda pendiente de prueba física en Safari iOS 9.
+Los hitos 1–9 han sido probados por el usuario en el iPad 3 con Safari de iOS 9. El Hito 10 añade pruebas de estabilidad; su corrección queda pendiente de verificación física.
 
 ## Ejecución
 
@@ -39,7 +39,7 @@ npm test
 
 Alternativamente, `node tests/run-tests.js`. No necesitas `npm install` ni dependencias npm. El ejecutor descubre automáticamente todos los archivos `tests/**/*.test.js`, los ejecuta uno por uno (aunque falle alguno), muestra un resumen y devuelve error si hay fallos.
 
-Con el Hito 9 son **181 pruebas automatizadas** (155 anteriores y 26 nuevas) repartidas en diez archivos. Ver los procedimientos manuales en `docs/pruebas-hito1.md` a `docs/pruebas-hito9.md`.
+Con el Hito 10 son **198 pruebas automatizadas** (181 anteriores y 17 nuevas) repartidas en doce archivos. Ver los procedimientos manuales en `docs/pruebas-hito1.md` a `docs/pruebas-hito10.md`.
 
 ## Hito 6: comportamiento y límites
 
@@ -66,7 +66,7 @@ Con el Hito 9 son **181 pruebas automatizadas** (155 anteriores y 26 nuevas) rep
 
 El almacenamiento es **local a cada dominio/dispositivo**: las partidas y los retos no se sincronizan. Exportar una copia JSON protege los ejércitos, tableros y retos creados, pero no incluye una partida activa ni la puntuación conseguida.
 
-**Continuidad:** `docs/estado-hito9.md`. Diseño inicial: `docs/Xake_diseno_funcional_v0_3.md`.
+**Continuidad:** `docs/estado-hito10.md`. Diseño inicial: `docs/Xake_diseno_funcional_v0_3.md`.
 
 ## Hito 8: varias partidas guardadas
 
@@ -85,3 +85,13 @@ El almacenamiento es **local a cada dominio/dispositivo**: las partidas y los re
 - Al completar un ejercicio se recuerda mediante `xake:v1:learnProgress` (`schemaVersion: 1`). Este progreso no cambia ni sobrescribe las partidas guardadas ni se incluye en copias JSON.
 - Las apariencias configuradas siguen aplicándose al tablero educativo. Los nuevos textos están en `i18n/es.json` y `i18n/eu.json`.
 - Compatibilidad: ES5 y CSS básico con Flexbox, sin librerías ni APIs de navegador modernas.
+
+
+## Hito 10: revisión de estabilidad
+
+- Se verificó el funcionamiento de las pruebas existentes y la paridad de **280 traducciones** entre castellano y euskera, incluyendo parámetros interpolados.
+- `js/i18n.js` ignora las respuestas `XMLHttpRequest` antiguas si el usuario cambia de idioma antes de que terminen; así se evita que una descarga tardía revierta la selección.
+- La prueba `tests/i18n-stability.test.js` reproduce el fallo en el código anterior y comprueba la corrección, sin depender de la red.
+- `tests/release-integrity.test.js` revisa recursos locales, imágenes, referencias, traducciones y orden de carga de módulos. También se verificó localmente la ausencia de sintaxis moderna incompatible con ES5 en los scripts de producción.
+- No se modifican datos locales, formato de partidas, lógica de ajedrez, IA, retos, aprendizaje ni apariencia.
+- El Hito 10 requiere una última validación en Safari del iPad 3 tras publicarlo. Después queda el repaso de diseño y estética reservado para el final.
