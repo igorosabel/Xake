@@ -95,3 +95,13 @@ El almacenamiento es **local a cada dominio/dispositivo**: las partidas y los re
 - `tests/release-integrity.test.js` revisa recursos locales, imágenes, referencias, traducciones y orden de carga de módulos. También se verificó localmente la ausencia de sintaxis moderna incompatible con ES5 en los scripts de producción.
 - No se modifican datos locales, formato de partidas, lógica de ajedrez, IA, retos, aprendizaje ni apariencia.
 - El Hito 10 requiere una última validación en Safari del iPad 3 tras publicarlo. Después queda el repaso de diseño y estética reservado para el final.
+
+## Instalar Xake en la pantalla de inicio (iOS y Android)
+
+- **iPad 3 (iOS 9):** abrir https://xake.osumi.es en Safari, pulsar **Compartir → Añadir a pantalla de inicio → Añadir**. El icono utiliza la imagen específica de Apple para iPad Retina (152 × 152).
+- **iPhone/iPad modernos:** utilizar el menú **Compartir → Añadir a pantalla de inicio**, y habilitar «Abrir como app» si aparece.
+- **Android (Chrome):** menú de tres puntos → **Instalar aplicación** o **Añadir a pantalla de inicio** según el navegador.
+
+Se han incorporado las etiquetas `apple-mobile-web-app-*`, los `apple-touch-icon` y `assets/manifest.json` con iconos PNG normales y adaptables (maskable). No se incorpora service worker ni modo offline: Xake requiere conexión para abrir sus recursos. Los datos se conservan localmente en cada contexto de navegación. En iOS, la app instalada puede tener almacenamiento **diferente del Safari normal**: los progresos y las partidas no se transfieren automáticamente entre ambos.
+
+El workflow actual no requiere cambios porque publica la carpeta `assets/` completa. Validar con `npm test`; consulta `docs/instalacion-pantalla-inicio.md`.
