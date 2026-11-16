@@ -131,6 +131,15 @@
     var msg = id('polish-reset-message'); if (msg) { msg.textContent = t('polish.resetDone'); }
     return true;
   }
+  function resetLearnProgress() {
+    if (!Xake.Learn || !Xake.Learn.storageKey) { return false; }
+    if (!root.confirm(t('polish.resetLearnConfirm'))) { return false; }
+    try { root.localStorage.removeItem(Xake.Learn.storageKey); }
+    catch (e) { root.alert(t('storage.failed')); return false; }
+    var msg = id('polish-learn-reset-message');
+    if (msg) { msg.textContent = t('polish.resetLearnDone'); }
+    return true;
+  }
   function buildSettingsScreen() {
     if (id('screen-settings')) { return; }
     var home = document.querySelector('#screen-menu .welcome');
@@ -154,7 +163,19 @@
     reset.appendChild(resetButton);
     var msg = create('p', 'xake-reset-message'); msg.id = 'polish-reset-message';
     msg.setAttribute('role', 'status'); reset.appendChild(msg);
-    content.appendChild(reset); section.appendChild(heading); section.appendChild(content);
+    content.appendChild(reset);
+    var resetLearn = create('div', 'xake-reset-section');
+    resetLearn.appendChild(label('polish.resetLearnTitle', 'h2'));
+    resetLearn.appendChild(label('polish.resetLearnDescription', 'p'));
+    var resetLearnButton = create('button', 'btn'); resetLearnButton.type = 'button';
+    resetLearnButton.id = 'polish-reset-learn-button';
+    resetLearnButton.appendChild(label('polish.resetLearnButton'));
+    resetLearnButton.onclick = resetLearnProgress;
+    resetLearn.appendChild(resetLearnButton);
+    var learnMsg = create('p', 'xake-reset-message'); learnMsg.id = 'polish-learn-reset-message';
+    learnMsg.setAttribute('role', 'status'); resetLearn.appendChild(learnMsg);
+    content.appendChild(resetLearn);
+    section.appendChild(heading); section.appendChild(content);
     main.appendChild(section);
     var open = create('button', 'btn btn-large'); open.type = 'button'; open.id = 'btn-settings';
     open.appendChild(label('polish.settingsTitle')); open.onclick = openSettings;
@@ -270,7 +291,8 @@
     formatSavedGames(); formatScenarios();
   }
   Xake.UIPolish = { init: init, readyChallenge: readyChallenge, readyImport: readyImport,
-    enabledTab: enabledTab, resetProgress: resetProgress, setPreference: setPreference,
+    enabledTab: enabledTab, resetProgress: resetProgress, resetLearnProgress: resetLearnProgress,
+    setPreference: setPreference,
     selectTab: selectTab, updateOptionalTabs: updateOptionalTabs, formatActionRow: formatActionRow,
     armyButtons: armyButtons, syncChallenge: syncChallenge, syncImport: syncImport };
   patchTranslations();

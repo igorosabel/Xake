@@ -85,11 +85,11 @@
   function init(code, callback) {
     var version = ++requestVersion;
     language = code === 'eu' ? 'eu' : 'es';
-    request('i18n/es.json?v=11.0.0', function (es) {
+    request('i18n/es.json?v=11.0.1', function (es) {
       if (validObject(es)) { spanish = es; }
       if (version !== requestVersion) { return; }
       if (language === 'es') { translated = {}; callback(); return; }
-      request('i18n/eu.json?v=11.0.0', function (eu) {
+      request('i18n/eu.json?v=11.0.1', function (eu) {
         if (version !== requestVersion) { return; }
         translated = validObject(eu) ? eu : {};
         callback();
@@ -100,7 +100,7 @@
     var version = ++requestVersion;
     language = code === 'eu' ? 'eu' : 'es';
     if (language === 'es') { translated = {}; callback(); return; }
-    request('i18n/eu.json?v=11.0.0', function (eu) {
+    request('i18n/eu.json?v=11.0.1', function (eu) {
       if (version !== requestVersion) { return; }
       translated = validObject(eu) ? eu : {};
       callback();

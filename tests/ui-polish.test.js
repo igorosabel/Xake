@@ -5,7 +5,9 @@ var vm = require('vm');
 var path = require('path');
 var assert = require('assert');
 var n = 0;
-var prefs = {}, progress = { 'xake:v1:challengeProgress': '{"items":[]}' };
+var prefs = {}, progress = { 'xake:v1:challengeProgress': '{"items":[]}',
+  'xake:v1:learnProgress': '{"schemaVersion":1,"completed":{"pawn-move":true}}' };
+var failRemove = false, alerts = 0;
 var confirmValue = true, failSave = false;
 var elements = {};
 function Node(tag) { this.tagName = tag; this.children = []; this.parentNode = null; this.className = ''; this.textContent = ''; this.attributes = {}; this.value = ''; }
@@ -25,9 +27,10 @@ var document = { readyState:'loading', addEventListener:function(){},
 var Xake = {
   Storage: { preferences:function(){return Object.assign({},prefs);}, savePreferences:function(value){if(failSave)return false; prefs=value;return true;}, scenario:function(k){return k==='sc1'?{id:k}:null;} },
   I18n: { t:function(k){return k;},init:function(k,cb){cb();},change:function(k,cb){cb();} },
-  Challenges: {goals:['check','queen','mate','mate2'],storageKeys:{progress:'xake:v1:challengeProgress'}}
+  Challenges: {goals:['check','queen','mate','mate2'],storageKeys:{progress:'xake:v1:challengeProgress'}},
+  Learn: {storageKey:'xake:v1:learnProgress'}
 };
-var window={Xake:Xake,localStorage:{removeItem:function(k){delete progress[k];}}, confirm:function(){return confirmValue;}, alert:function(){}, setTimeout:function(cb){cb();}};
+var window={Xake:Xake,localStorage:{removeItem:function(k){if(failRemove)throw Error('quota');delete progress[k];}}, confirm:function(){return confirmValue;}, alert:function(){alerts++;}, setTimeout:function(cb){cb();}};
 window.window=window;
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../js/ui-polish.js'),'utf8'),{window:window,document:document});
 var P=Xake.UIPolish;
@@ -48,6 +51,55 @@ elements['challenge-goal'].value='mate2';
 test('Admite mate en dos como objetivo',function(){assert.strictEqual(P.readyChallenge(),true);});
 test('Reset cancelado no toca progreso',function(){confirmValue=false;assert.strictEqual(P.resetProgress(),false);assert(progress['xake:v1:challengeProgress']);});
 test('Reset confirmado solo borra progreso, no retos propios',function(){confirmValue=true;progress['xake:v1:challenges']='retos';assert.strictEqual(P.resetProgress(),true);assert.strictEqual(progress['xake:v1:challengeProgress'],undefined);assert.strictEqual(progress['xake:v1:challenges'],'retos');});
+test('Restablecer Aprender cancelado conserva el progreso',function(){
+  confirmValue=false;
+  var before=progress['xake:v1:learnProgress'];
+  assert.strictEqual(P.resetLearnProgress(),false);
+  assert.strictEqual(progress['xake:v1:learnProgress'],before);
+  confirmValue=true;
+});
+test('Restablecer Aprender solo borra lecciones completadas',function(){
+  progress['xake:v1:challengeProgress']='estrellas';
+  progress['xake:v1:challenges']='retos propios';
+  progress['xake:v2:games']='partidas';
+  progress['xake:v1:learnProgress']='lecciones';
+  assert.strictEqual(P.resetLearnProgress(),true);
+  assert.strictEqual(progress['xake:v1:learnProgress'],undefined);
+  assert.strictEqual(progress['xake:v1:challengeProgress'],'estrellas');
+  assert.strictEqual(progress['xake:v1:challenges'],'retos propios');
+  assert.strictEqual(progress['xake:v2:games'],'partidas');
+});
+test('Restablecer Aprender informa del error de almacenamiento',function(){
+  progress['xake:v1:learnProgress']='completado';
+  failRemove=true;
+  var a=alerts;
+  assert.strictEqual(P.resetLearnProgress(),false);
+  assert.strictEqual(progress['xake:v1:learnProgress'],'completado');
+  assert.strictEqual(alerts,a+1);
+  failRemove=false;
+});
+test('Restablecer Aprender no utiliza claves inventadas sin el módulo educativo',function(){
+  var learn=Xake.Learn;
+  Xake.Learn=null;
+  assert.strictEqual(P.resetLearnProgress(),false);
+  assert.strictEqual(progress['xake:v1:learnProgress'],'completado');
+  Xake.Learn=learn;
+});
+test('Los contadores usan centrado nativo, no flex dentro de button',function(){
+  var css=fs.readFileSync(path.join(__dirname,'../css/ui-polish.css'),'utf8');
+  var rule=css.match(/\.army-count-row \.editor-count-btn\s*\{([^}]+)\}/);
+  assert(rule,'Falta la regla del contador');
+  assert(/text-align:\s*center/.test(rule[1]));
+  assert(/display:\s*block/.test(rule[1]));
+  assert(/line-height:\s*41px/.test(rule[1]));
+  assert(!/display:\s*(?:-webkit-flex|flex)/.test(rule[1]));
+});
+test('Los textos de reset Aprender existen en castellano y euskera',function(){
+  var keys=['resetLearnTitle','resetLearnDescription','resetLearnButton','resetLearnConfirm','resetLearnDone'];
+  var es=JSON.parse(fs.readFileSync(path.join(__dirname,'../i18n/es.json'),'utf8'));
+  var eu=JSON.parse(fs.readFileSync(path.join(__dirname,'../i18n/eu.json'),'utf8'));
+  keys.forEach(function(k){assert(es['polish.'+k]);assert(eu['polish.'+k]);});
+});
 function row(n){var r=new Node('div');for(var i=0;i<n;i++){var b=new Node('button');b.textContent=['Jugar','Máquina','Editar','Duplicar','Eliminar'][i];r.appendChild(b);}return r;}
 test('Tableros: dos acciones izquierda y tres iconos derecha',function(){var r=row(5);P.formatActionRow(r,2,['edit','duplicate','delete']);assert.strictEqual(r.children.length,2);assert.strictEqual(r.children[0].children.length,2);assert.strictEqual(r.children[1].children.length,3);assert(r.children[1].children[0].attributes['aria-label']);});
 test('No duplica agrupación de acciones si se llama dos veces',function(){var r=row(3);P.formatActionRow(r,1,['edit','delete']);P.formatActionRow(r,1,['edit','delete']);assert.strictEqual(r.children.length,2);assert.strictEqual(r.children[1].children.length,2);});
