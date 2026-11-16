@@ -17,10 +17,12 @@
     <link rel="manifest" href="assets/manifest.json">
     <link rel="icon" href="assets/icons/favicon.ico" sizes="any">
     <link rel="icon" href="assets/icons/favicon-32.png" type="image/png" sizes="32x32">
-    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon-180.png">
+    <!-- Compatibilidad con el buscador de iconos del Safari de iOS 9. -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-precomposed.png">
     <link rel="apple-touch-icon" sizes="76x76" href="assets/icons/apple-touch-icon-76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="assets/icons/apple-touch-icon-120.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/icons/apple-touch-icon-152.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="167x167" href="assets/icons/apple-touch-icon-167.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon-180.png">
     <link rel="stylesheet"
@@ -34,9 +36,11 @@
     <link rel="stylesheet" href="css/learn.css?v=9.0.0">
     <link rel="stylesheet" href="css/saved-games.css?v=8.0.0">
       <link rel="stylesheet" href="css/ui-polish.css?v=11.0.1">
+    <link rel="stylesheet" href="css/ios-home.css?v=12.0.0">
   </head>
 
   <body>
+    <div class="xake-ios-top-swatch" aria-hidden="true"></div>
     <div class="app-shell">
       <header class="app-header">
         <div class="brand"><span class="brand-icon"

@@ -34,6 +34,9 @@ jobs:
         run: |
           test -f index.html || exit 1
           test -f js/ai-worker.js || exit 1
+          test -f apple-touch-icon.png || exit 1
+          test -f apple-touch-icon-precomposed.png || exit 1
+          test -f apple-touch-icon-152x152.png || exit 1
           for dir in assets css js lib i18n; do
             test -d "$dir" || exit 1
           done
@@ -44,7 +47,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: 'index.html,assets,css,js,lib,i18n'
+          source: 'index.html,apple-touch-icon.png,apple-touch-icon-precomposed.png,apple-touch-icon-152x152.png,assets,css,js,lib,i18n'
           target: ${{ secrets.REMOTE_PUBLIC_DIR }}
           overwrite: true
           rm: false

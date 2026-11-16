@@ -58,13 +58,15 @@ test('Icono adaptable para Android: maskable 512', () => {
 });
 test('Apple: versiones específicas de iPhone, iPad y iPad Retina', () => {
   for (const px of [76,120,152,167,180]) {
-    const resource = `assets/icons/apple-touch-icon-${px}.png`;
-    assert(html.includes(`sizes="${px}x${px}" href="${resource}"`),resource);
+    const resource = px === 152 ? 'apple-touch-icon-152x152.png' : `assets/icons/apple-touch-icon-${px}.png`;
+    assert(html.includes(`sizes="${px}x${px}" href="${px === 152 ? '/' : ''}${resource}"`),resource);
     assert.deepStrictEqual(pngSize(resource),[px,px]);
   }
 });
-test('Apple: icono sin atributo sizes como respaldo', () => {
-  assert(html.includes('<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon-180.png">'));
+test('Apple: icono canonico sin sizes y variante precomposed', () => {
+  assert(html.includes('<link rel="apple-touch-icon" href="/apple-touch-icon.png">'));
+  assert(html.includes('<link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-precomposed.png">'));
+  assert.deepStrictEqual(pngSize('apple-touch-icon.png'),[180,180]);
 });
 test('Favicons apuntan a archivos existentes', () => {
   assert(html.includes('href="assets/icons/favicon.ico"'));
