@@ -160,7 +160,7 @@
   "backup.error.storage": "Ezin izan da inportatu: leku nahikorik ez edo biltegiratzea blokeatuta dago.",
   "challenge.menu": "Erronkak",
   "challenge.title": "Erronkak",
-  "challenge.intro": "Lortu helburua jokaldi bakarrean.",
+  "challenge.intro": "Ebatzi jokaldi bateko edo biko erronkak.",
   "challenge.included": "Hasteko erronkak",
   "challenge.mine": "Nire erronkak",
   "challenge.play": "Jolastu",
@@ -169,7 +169,7 @@
   "challenge.deleted": "Erronka ezabatu da.",
   "challenge.noCustom": "Oraindik ez duzu erronkarik sortu.",
   "challenge.create": "Sortu erronka nire taulekin",
-  "challenge.createHelp": "Aukeratu gordetako taula bat. Xakek helburua jokaldi bakarrean lor daitekeela egiaztatuko du.",
+  "challenge.createHelp": "Aukeratu gordetako taula bat. Xakek helburua bete daitekeela egiaztatuko du.",
   "challenge.scenario": "Taula",
   "challenge.chooseScenario": "Aukeratu gordetako taula",
   "challenge.noScenarios": "Sortu lehenik taula bat «Taula sortu» atalean.",
@@ -197,5 +197,14 @@
   "challenge.preset.queen2": "Zaldiaren jauzia",
   "challenge.preset.mate1": "Erregina erabakigarria",
   "challenge.preset.mate2": "Erregearen txokoa",
-  "backup.error.challenge": "Kopiak erronka baliogabea edo errepikatua dauka."
+  "backup.error.challenge": "Kopiak erronka baliogabea edo errepikatua dauka.",
+  "challenge.goal.mate2": "Xake mate bi jokalditan",
+  "challenge.instructionsTwo": "Jokatu bi aldiz: lehenengo zuk, aurkariak erantzungo du eta gero matea bilatu.",
+  "challenge.stepFirst": "Lehen jokaldia: prestatu saihestezina den mate bat.",
+  "challenge.stepSecond": "Bigarren jokaldia: eman xake mate!",
+  "challenge.defensePlayed": "Aurkariak erantzun du. Orain lortu xake matea!",
+  "challenge.tooComplex": "Taula honek pieza edo aukera gehiegi ditu gailu honetan bi jokaldiko matea aztertzeko. Saiatu pieza gutxiagorekin.",
+  "challenge.preset.mateTwo1": "Aurrerapauso bat",
+  "challenge.preset.mateTwo2": "Bi dorreak",
+  "challenge.preset.mateTwo3": "Errege beltzaren matea"
 }

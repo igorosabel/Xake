@@ -160,7 +160,7 @@
   "backup.error.storage": "No se ha podido importar: falta espacio o el almacenamiento está bloqueado.",
   "challenge.menu": "Retos",
   "challenge.title": "Retos",
-  "challenge.intro": "Consigue el objetivo con una sola jugada.",
+  "challenge.intro": "Resuelve retos de una o dos jugadas.",
   "challenge.included": "Retos para empezar",
   "challenge.mine": "Mis retos",
   "challenge.play": "Jugar",
@@ -169,7 +169,7 @@
   "challenge.deleted": "Reto eliminado.",
   "challenge.noCustom": "Aún no has creado ningún reto.",
   "challenge.create": "Crear reto con mis tableros",
-  "challenge.createHelp": "Elige un tablero guardado. Xake comprobará que el objetivo pueda conseguirse en una jugada.",
+  "challenge.createHelp": "Elige un tablero guardado. Xake comprobará que el objetivo pueda conseguirse.",
   "challenge.scenario": "Tablero",
   "challenge.chooseScenario": "Selecciona un tablero guardado",
   "challenge.noScenarios": "Crea primero un tablero desde «Crear tablero».",
@@ -197,5 +197,14 @@
   "challenge.preset.queen2": "El salto del caballo",
   "challenge.preset.mate1": "La reina decisiva",
   "challenge.preset.mate2": "El rincón del rey",
-  "backup.error.challenge": "La copia contiene un reto inválido o duplicado."
+  "backup.error.challenge": "La copia contiene un reto inválido o duplicado.",
+  "challenge.goal.mate2": "Jaque mate en dos jugadas",
+  "challenge.instructionsTwo": "Juega dos veces: primero tú, luego responde el rival y buscas el mate.",
+  "challenge.stepFirst": "Primera jugada: prepara un mate inevitable.",
+  "challenge.stepSecond": "Segunda jugada: ¡da jaque mate!",
+  "challenge.defensePlayed": "El rival ha respondido. ¡Ahora consigue el mate!",
+  "challenge.tooComplex": "Este tablero tiene demasiadas piezas o variantes para analizar un mate en dos en este dispositivo. Prueba uno con menos piezas.",
+  "challenge.preset.mateTwo1": "Un paso adelante",
+  "challenge.preset.mateTwo2": "Las dos torres",
+  "challenge.preset.mateTwo3": "El rey negro prepara el mate"
 }

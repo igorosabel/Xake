@@ -1,11 +1,11 @@
 /* global window, Chess */
-/* Xake Hito 5: retos de una jugada, sin DOM ni APIs modernas. ES5. */
+/* Xake Hitos 5–6: retos de una y dos jugadas, sin DOM ni APIs modernas. ES5. */
 (function (root) {
   'use strict';
   var Xake = root.Xake = root.Xake || {};
   var KEY_CHALLENGES = 'xake:v1:challenges';
   var KEY_PROGRESS = 'xake:v1:challengeProgress';
-  var GOALS = ['check', 'queen', 'mate'];
+  var GOALS = ['check', 'queen', 'mate', 'mate2'];
   var BUILTIN = [
     { id: 'builtin-check-1', nameKey: 'challenge.preset.check1', goal: 'check', initialFen: '4k3/8/8/8/8/8/8/4K2R w - - 0 1' },
     { id: 'builtin-check-2', nameKey: 'challenge.preset.check2', goal: 'check', initialFen: '4k3/8/8/8/8/8/8/R3K3 w - - 0 1' },
@@ -14,6 +14,16 @@
     { id: 'builtin-mate-1', nameKey: 'challenge.preset.mate1', goal: 'mate', initialFen: '7k/8/5KQ1/8/8/8/8/8 w - - 0 1' },
     { id: 'builtin-mate-2', nameKey: 'challenge.preset.mate2', goal: 'mate', initialFen: 'k7/8/1QK5/8/8/8/8/8 w - - 0 1' }
   ];
+  // La colección original se conserva para que las partidas y pruebas del Hito 5 sigan siendo válidas.
+  var MULTI_BUILTIN = [
+    { id: 'builtin-mate-two-1', nameKey: 'challenge.preset.mateTwo1', goal: 'mate2',
+      initialFen: '1k6/3KQ3/8/8/8/8/8/8 w - - 0 1' },
+    { id: 'builtin-mate-two-2', nameKey: 'challenge.preset.mateTwo2', goal: 'mate2',
+      initialFen: '8/6k1/1R6/8/8/8/2R5/4K3 w - - 0 1' },
+    { id: 'builtin-mate-two-3', nameKey: 'challenge.preset.mateTwo3', goal: 'mate2',
+      initialFen: '8/8/8/8/8/8/3kq3/1K6 b - - 0 1' }
+  ];
+  function allBuiltins() { return BUILTIN.concat(MULTI_BUILTIN); }
   function goodId(v) { return typeof v === 'string' && /^[a-z0-9-]{1,80}$/.test(v); }
   function goodName(v) { return typeof v === 'string' && v.length > 0 && v.length <= 60 && !!v.replace(/^\s+|\s+$/g, ''); }
   function goodGoal(v) { return GOALS.indexOf(v) >= 0; }
@@ -39,6 +49,8 @@
   function success(chess, played, goal) {
     if (!played || !goodGoal(goal)) { return false; }
     if (goal === 'queen') { return played.captured === 'q'; }
+    // El mate en dos requiere validar una SECUENCIA; no se evalúa con success().
+    if (goal === 'mate2') { return false; }
     if (goal === 'mate') { return chess.in_checkmate(); }
     return chess.in_check();
   }
@@ -47,6 +59,7 @@
     var files = 'abcdefgh';
     function square(index) { return files.charAt(index & 7) + String(8 - (index >> 4)); }
     if (!c || !goodGoal(goal)) { return out; }
+    if (goal === 'mate2') { return Xake.MateTwo ? Xake.MateTwo.firstMoves(fen) : out; }
     // La búsqueda interna evita recalcular todas las jugadas legales en cada
     // candidato. Es importante para los tableros con muchas reinas del editor.
     all = c.search_moves();
@@ -84,9 +97,9 @@
     for (i = 0; i < items.length; i++) { if (valid(items[i])) { out.push(items[i]); } }
     return out;
   }
-  function all() { return BUILTIN.concat(custom()); }
+  function all() { return allBuiltins().concat(custom()); }
   function save(item) {
-    if (!valid(item) || BUILTIN.some(function (v) { return v.id === item.id; })) { return false; }
+    if (!valid(item) || allBuiltins().some(function (v) { return v.id === item.id; })) { return false; }
     var items = custom(), i, updated = false;
     for (i = 0; i < items.length; i++) { if (items[i].id === item.id) { items[i] = item; updated = true; break; } }
     if (!updated) { items.push(item); }
@@ -134,7 +147,8 @@
     return hintUsed ? 1 : attempts <= 1 ? 3 : 2;
   }
   Xake.Challenges = {
-    builtins: BUILTIN, goals: GOALS, all: all, custom: custom, valid: valid,
+    builtins: BUILTIN, multiBuiltins: MULTI_BUILTIN, allBuiltins: allBuiltins,
+    goals: GOALS, all: all, custom: custom, valid: valid,
     solutions: solutions, success: success, createFromScenario: createFromScenario,
     save: save, remove: remove, progress: progress, markSolved: markSolved, stars: stars,
     storageKeys: { challenges: KEY_CHALLENGES, progress: KEY_PROGRESS }

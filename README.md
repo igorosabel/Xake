@@ -1,84 +1,64 @@
 # Xake
 
-Aplicación web de ajedrez infantil para Safari de **iOS 9** (iPad 3 de 2012) y navegadores actuales. Interfaz en **castellano por defecto**, con traducción al **euskera**. No necesita servidor de aplicación, build, CDN ni dependencias externas.
+Juego web de ajedrez y retos pensado para niños, compatible con Safari de **iOS 9** (iPad 3 de 2012) y navegadores modernos. Interfaz en español por defecto, con traducción a euskera. JavaScript ES5, sin frameworks, WebAssembly ni dependencias externas.
 
-Web de pruebas: https://xake.osumi.es · Repositorio: https://github.com/igorosabel/Xake
+**Web de pruebas:** https://xake.osumi.es · **Repositorio:** https://github.com/igorosabel/Xake
 
-## Funcionalidades
+## Funcionalidades implementadas
 
-**Hito 1 — Tablero clásico (validado en el iPad 3):**
+- **Hito 1:** ajedrez clásico para dos jugadores en el mismo dispositivo, movimientos legales, promoción, enroque, jaques y tablas. Selección por pulsaciones, sin arrastrar.
+- **Hito 2:** cuatro niveles de juego contra la máquina, elección de color e IA calculada en Web Worker.
+- **Hito 3:** ejércitos con piezas arbitrarias, editor de tableros táctil, colocación manual o automática, deshacer/rehacer y validación; guardar y jugar tableros personalizados.
+- **Hito 4:** apariencias Clásico, Medallas y Emblemas por bando; copias JSON de ejércitos, tableros y retos creados. Se corrigió el fallo de imágenes fantasma.
+- **Hito 5:** seis retos de una jugada: dar jaque, capturar una reina y mate en uno; pistas, estrellas y creación desde tableros guardados.
+- **Hito 6:** tres retos de **mate en dos**; el rival responde automáticamente con una defensa legal. Para ganar hay que elegir una primera jugada que garantice mate tras **cualquier** respuesta y dar mate en el segundo turno. Se pueden crear desde tableros propios y guardar/exportar como los demás retos.
 
-- Dos personas en el mismo dispositivo; tocar pieza y después destino, sin arrastrar.
-- Movimientos legales, enroque, captura al paso, promociones, jaque, mate y tablas.
-- Deshacer, girar tablero, reiniciar, guardar y continuar.
+Los hitos 1–5 han sido probados por el usuario en el iPad 3; el Hito 6 requiere todavía su comprobación física.
 
-**Hito 2 — Contra la máquina (validado por el usuario):**
+## Ejecución
 
-- Elegir blancas o negras y cuatro dificultades: Principiante, Fácil, Normal y Difícil.
-- Búsqueda ligera mediante `Web Worker` y tiempo de cálculo limitado.
-- Sin Stockfish ni conexión a internet para calcular; retroceso de turno completo al deshacer.
-- Los niveles son orientativos y no equivalen a una clasificación Elo.
-
-**Hito 3 — Ejércitos y tableros personalizados (pendiente de validación en iPad 3 físico):**
-
-- Editor táctil en tres pasos: inventarios → colocación → validación y guardado.
-- Configurar cantidades arbitrarias de piezas (exactamente un rey por color, límites de casillas y peones).
-- Inventarios independientes de los colores, guardables y reutilizables como **ejércitos**.
-- Colocar, mover y retirar tocando casillas; deshacer/rehacer ediciones; distribuir automáticamente.
-- Guardar **tableros**, editarlos, duplicarlos, eliminarlos y jugar desde ellos contra otra persona o la máquina.
-- Tablas terminales guardables para edición; posiciones incoherentes bloqueadas.
-- Cada partida conserva su propio FEN inicial, por lo que puede reiniciarse o recuperarse aunque se borre el tablero original.
-- Traducidos al español y al euskera los nuevos controles y avisos.
-
-**Almacenamiento:** `localStorage`. Los ejércitos (`xake:v1:armies`), los tableros (`xake:v1:scenarios`), la partida activa (`xake:v1:games`) y las preferencias (`xake:v1:preferences`) son independientes. El guardado del Hito 1/2 sigue siendo compatible.
-
-## Ejecutar
-
-Desde la raíz:
+Sirve la carpeta raíz por HTTP(S), por ejemplo:
 
 ```bash
 python -m http.server 8000
 ```
 
-Visita `http://localhost:8000` o directamente `https://xake.osumi.es` si has publicado allí los archivos. **No abras `index.html` con `file://`**, porque las traducciones JSON y el Worker necesitan HTTP(S).
+Visita `http://localhost:8000` o publica los archivos en un servidor estático HTTPS. No abras `index.html` con `file://`: los JSON de idiomas y el Worker necesitan HTTP(S).
 
-**Atención:** el almacenamiento local depende del origen. Una partida creada en `localhost` no aparecerá automáticamente en `xake.osumi.es` y viceversa. Por el momento no hay sincronización entre dispositivos ni importación/exportación; conviene no borrar los datos del sitio si se quiere conservar una configuración.
-
-Al desplegar nuevas versiones, si Safari muestra una copia antigua de CSS o JS, recarga la página (o limpia la caché sin eliminar los datos del sitio).
-
-## Pruebas automatizadas
+## Pruebas
 
 ```bash
 node tests/chess.test.js
 node tests/ai.test.js
 node tests/editor.test.js
+node tests/hito4.test.js
+node tests/appearance-ghost.test.js
+node tests/challenges.test.js
+node tests/mate-two.test.js
 ```
 
-Actualmente son **52 pruebas** (16 + 14 + 22). Se ejecutan con Node.js solo en desarrollo; en el iPad basta abrir la web. Pruebas manuales detalladas en `docs/pruebas-hito1.md`, `docs/pruebas-hito2.md` y `docs/pruebas-hito3.md`.
+Las **116 pruebas** (101 anteriores + 15 del Hito 6) usan Node.js solo en desarrollo. Ver los procedimientos manuales en `docs/pruebas-hito1.md` a `docs/pruebas-hito6.md`.
 
-## Estructura del proyecto
+## Hito 6: comportamiento y límites
 
-- `lib/chess.js`: motor propio de reglas y API ligera de búsqueda; JavaScript ES5. **No** es la biblioteca externa chess.js.
-- `js/game.js`: partida, modo, FEN inicial, historial, reinicio y restauración.
-- `js/ai.js` y `js/ai-worker.js`: IA y búsqueda en Worker.
-- `js/board.js`: tablero de 64 casillas reutilizado para jugar y editar.
-- `js/editor.js`: inventario, colocación, deshacer/rehacer, auto-distribución, validación y serialización.
-- `js/editor-ui.js`: tres pasos del editor, biblioteca de ejércitos y tableros.
-- `js/app.js`: menús, partidas, coordinación de IA y pantallas.
-- `js/storage.js`: almacenamiento local versionado.
-- `js/i18n.js` e `i18n/*.json`: textos y respaldo al español.
-- `css/editor.css`: estilos táctiles y responsive sin CSS Grid moderno.
+- El objetivo **«Mate en dos jugadas»** significa dos jugadas del jugador y **una respuesta del rival** en medio; no una secuencia donde el rival colabora.
+- La primera jugada debe conducir al mate independientemente de cuál sea la defensa legal del contrario. Xake selecciona automáticamente una de las respuestas más resistentes, de forma determinista.
+- Puede pedirse una pista para cada jugada; usar pistas reduce la puntuación a una estrella. Los fallos se cuentan por intento de solución, no por cada movimiento de la secuencia.
+- Para proteger al iPad 3, la comprobación de un mate en dos solo analiza posiciones con hasta **seis piezas** y un número acotado de variantes y de tiempo. Si el escenario es demasiado complejo, el editor de retos informa de ello. Esto **no restringe** las partidas normales ni los demás objetivos de retos.
+- Los retos personalizados siguen siendo autónomos y usan su propio FEN. Las copias JSON antiguas son compatibles y las nuevas incluyen el objetivo `mate2` sin modificar el formato de copia (`schemaVersion: 1`).
 
-## Próximos hitos
+## Arquitectura
 
-Quedan por incorporar: **apariencias de piezas** seleccionables por bando, exportación/importación de ejércitos y tableros, biblioteca de varias partidas guardadas y el modo Retos. Primero conviene probar el Hito 3 en el iPad 3, especialmente la colocación manual, las posiciones con muchas piezas y las partidas personalizadas contra la máquina.
+- `lib/chess.js`: motor propio, ES5 (no es el paquete externo chess.js).
+- `js/board.js`, `js/game.js`, `js/app.js`: tablero, estado y coordinación.
+- `js/ai.js`, `js/ai-worker.js`: IA en Worker.
+- `js/editor.js`, `js/editor-ui.js`: ejércitos y tableros.
+- `js/appearance.js`: apariencias por color.
+- `js/challenges.js`, `js/challenge-ui.js`: retos y presentación.
+- `js/mate-two.js`: análisis aislado de mate en dos con límites de complejidad y caché de resultados.
+- `js/storage.js`, `js/backup.js`: persistencia versionada en `localStorage` e importación/exportación.
+- `js/i18n.js`, `i18n/*.json`: interfaz multilingüe con respaldo al español.
 
-Documento original de diseño funcional: `docs/Xake_diseno_funcional_v0_3.md`. Estado de este bloque y recomendaciones de continuidad: `docs/estado-hito3.md`.
+El almacenamiento es **local a cada dominio/dispositivo**: las partidas y los retos no se sincronizan. Exportar una copia JSON protege los ejércitos, tableros y retos creados, pero no incluye una partida activa ni la puntuación conseguida.
 
-## Hito 5 — Retos de una jugada
-
-Desde **Retos** se pueden resolver seis ejercicios incluidos (dar jaque, capturar una reina o conseguir jaque mate), pedir una pista y ganar entre 1 y 3 estrellas. También se pueden crear retos con tableros personalizados que tengan al menos una solución legal en **una sola jugada**.
-
-Los retos creados y las mejores puntuaciones se guardan localmente. Las copias JSON de **Mis tableros** incluyen los retos creados, pero no las puntuaciones; las copias anteriores siguen siendo compatibles. Las partidas clásicas y contra la máquina no se ven modificadas.
-
-Pruebas nuevas: `node tests/challenges.test.js` (además de las cinco baterías existentes). Ver `docs/pruebas-hito5.md`. La compatibilidad física con Safari de iOS 9 aún debe confirmarse con esta versión.
+**Continuidad:** `docs/estado-hito6.md`. Diseño inicial: `docs/Xake_diseno_funcional_v0_3.md`.

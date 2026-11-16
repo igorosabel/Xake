@@ -1,10 +1,11 @@
 /* global window, document */
-/* Xake Hito 5: interfaz de retos de una jugada. JavaScript ES5, solo pulsaciones. */
+/* Xake Hitos 5–6: interfaz de retos, una o dos jugadas. ES5, solo pulsaciones. */
 (function (root) {
   'use strict';
   var Xake = root.Xake = root.Xake || {};
   var current = null, game = null, board = null, selected = null, hint = false;
   var attempts = 0, finished = false, result = null, pending = null;
+  var stage = 0, hintEver = false, hintStage = -1;
   function id(name) { return document.getElementById(name); }
   function t(key, vars) { return Xake.I18n.t(key, vars); }
   function el(tag, text, cls) {
@@ -47,9 +48,8 @@
     var built = id('challenge-builtins'), custom = id('challenge-custom'), saved = Xake.Challenges.custom();
     var progress = Xake.Challenges.progress(), i;
     built.innerHTML = ''; custom.innerHTML = '';
-    for (i = 0; i < Xake.Challenges.builtins.length; i++) {
-      built.appendChild(createItem(Xake.Challenges.builtins[i], false, progress));
-    }
+    var presets = Xake.Challenges.allBuiltins();
+    for (i = 0; i < presets.length; i++) { built.appendChild(createItem(presets[i], false, progress)); }
     if (!saved.length) { custom.appendChild(el('p', t('challenge.noCustom'), 'challenge-subtitle')); }
     for (i = 0; i < saved.length; i++) { custom.appendChild(createItem(saved[i], true, progress)); }
     var scenarios = Xake.Storage.scenarios(), select = id('challenge-scenario'), last = select.value;
@@ -69,7 +69,7 @@
     Xake.navigate('screen-challenges');
   }
   function open(item) {
-    current = item; attempts = 0; hint = false;
+    current = item; attempts = 0; hint = false; hintEver = false; hintStage = -1;
     id('challenge-list').className = 'is-hidden';
     id('challenge-play').className = '';
     reset();
@@ -80,7 +80,7 @@
   function reset() {
     if (!current) { return; }
     game = new Xake.Game({ mode: 'local-two-players', initialFen: current.initialFen });
-    selected = null; finished = false; result = null; pending = null;
+    selected = null; finished = false; result = null; pending = null; stage = 0; hint = false; hintStage = -1;
     id('challenge-promotion').className = 'is-hidden';
     if (board) { board.flipped = game.engine.turn() === 'b'; }
     render();
@@ -95,7 +95,9 @@
       }
     }
     if (!selected && hint && !finished) {
-      var solutions = Xake.Challenges.solutions(current.initialFen, current.goal);
+      var solutions = current.goal === 'mate2' && stage === 1 ?
+        Xake.Challenges.solutions(game.engine.fen(), 'mate') :
+        Xake.Challenges.solutions(current.initialFen, current.goal);
       if (solutions.length) { selected = solutions[0].from; legal = [solutions[0].to]; }
     }
     var moves = game.history(), last = moves.length ? moves[moves.length - 1] : null;
@@ -103,29 +105,50 @@
     id('challenge-current-name').textContent = title(current);
     id('challenge-current-goal').textContent = goalName(current.goal);
     id('challenge-turn').textContent = t(game.engine.turn() === 'w' ? 'challenge.white' : 'challenge.black');
-    id('challenge-instructions').textContent = t('challenge.instructions');
-    id('challenge-hint').disabled = finished || hint;
+    id('challenge-instructions').textContent = t(current.goal === 'mate2' ? 'challenge.instructionsTwo' : 'challenge.instructions');
+    id('challenge-hint').disabled = finished || hintStage === stage;
     id('challenge-retry').disabled = !finished && attempts === 0 && !hint;
-    id('challenge-result').textContent = result || '';
+    id('challenge-result').textContent = result || (current.goal === 'mate2' ?
+      t(stage === 0 ? 'challenge.stepFirst' : 'challenge.stepSecond') : '');
     id('challenge-result').className = 'challenge-result' + (finished && result && !game.engine.game_over() ? ' is-success' : '');
+  }
+  function complete(success) {
+    finished = true;
+    attempts++;
+    if (success) {
+      var earned = Xake.Challenges.stars(attempts, hintEver);
+      if (!Xake.Challenges.markSolved(current.id, earned)) {
+        result = t('challenge.solved') + ' ' + t('storage.failed');
+      } else { result = t('challenge.solved') + '  ' + new Array(earned + 1).join('★'); }
+    } else { result = t('challenge.tryAgain'); }
+    render();
+    id('challenge-result').className = 'challenge-result ' + (success ? 'is-success' : 'is-error');
   }
   function perform(from, to, promotion) {
     if (!current || finished) { return; }
+    var proposal = { from: from, to: to, promotion: promotion || null };
+    var defense = null, i, candidates;
+    if (current.goal === 'mate2' && stage === 0) {
+      // La primera jugada solo se acepta si garantiza mate ante CUALQUIER defensa.
+      defense = Xake.MateTwo.replyFor(current.initialFen, proposal);
+    }
     var played = game.move(from, to, promotion);
     if (!played) { return; }
-    selected = null; attempts++;
-    finished = true;
-    if (Xake.Challenges.success(game.engine, played, current.goal)) {
-      var earned = Xake.Challenges.stars(attempts, hint);
-      if (!Xake.Challenges.markSolved(current.id, earned)) {
-        result = t('challenge.solved') + ' ' + t('storage.failed');
-      } else {
-        result = t('challenge.solved') + '  ' + new Array(earned + 1).join('★');
+    selected = null;
+    if (current.goal === 'mate2') {
+      if (stage === 0) {
+        if (!defense) { complete(false); return; }
+        // Respuesta automática: selecciona la defensa más resistente, no una línea cooperativa.
+        if (!game.move(defense.move.from, defense.move.to, defense.move.promotion)) {
+          result = t('challenge.tryAgain'); complete(false); return;
+        }
+        stage = 1; hint = false; result = t('challenge.defensePlayed');
+        render(); return;
       }
-    } else { result = t('challenge.tryAgain'); }
-    render();
-    id('challenge-result').className = 'challenge-result ' +
-      (Xake.Challenges.success(game.engine, played, current.goal) ? 'is-success' : 'is-error');
+      complete(game.engine.in_checkmate());
+      return;
+    }
+    complete(Xake.Challenges.success(game.engine, played, current.goal));
   }
   function promotion(choices, from, to) {
     var list = id('challenge-promotion'), options = ['q', 'r', 'b', 'n'], names = { q: 'common.queen', r: 'common.rook', b: 'common.bishop', n: 'common.knight' }, i;
@@ -162,7 +185,11 @@
     if (!name || name.length > 60) { message(t('challenge.invalidName'), true); return; }
     if (!scenario) { message(t('challenge.chooseScenario'), true); return; }
     var item = Xake.Challenges.createFromScenario(scenario, goal, name);
-    if (!item) { message(t('challenge.noSolution'), true); return; }
+    if (!item) {
+      var isComplex = goal === 'mate2' && scenario && Xake.MateTwo &&
+        Xake.MateTwo.analysis(scenario.initialFen).status === 'too-complex';
+      message(t(isComplex ? 'challenge.tooComplex' : 'challenge.noSolution'), true); return;
+    }
     if (!Xake.Challenges.save(item)) { message(t('storage.failed'), true); return; }
     id('challenge-name').value = '';
     list(); message(t('challenge.saved'), false);
@@ -178,7 +205,7 @@
     id('btn-open-challenges').onclick = openList;
     id('challenge-back-menu').onclick = function () { Xake.navigate('screen-menu'); };
     id('challenge-back-list').onclick = openList;
-    id('challenge-hint').onclick = function () { hint = true; selected = null; render(); };
+    id('challenge-hint').onclick = function () { hint = true; hintEver = true; hintStage = stage; selected = null; render(); };
     id('challenge-retry').onclick = function () { reset(); };
     id('challenge-create').onclick = create;
     // Si cambia el tablero elegido, sugerir su nombre como nombre del reto.
