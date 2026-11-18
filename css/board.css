@@ -14,3 +14,7 @@
 .board-piece.black { color: #19251f; text-shadow: 0 1px 1px rgba(255,255,255,.55); }
 .board-label { position: absolute; bottom: 2px; right: 3px; font-size: 10px; font-weight: bold; opacity: .65; pointer-events: none; }
 .board-square:focus { z-index: 1; outline: 3px solid #ecb94c; outline-offset: -3px; }
+
+/* Reduce el doble toque para hacer zoom sin alterar los clics en casillas.
+ * iOS 9 usa además el viewport y el guardián de gestos multitáctiles. */
+.chess-board, .board-square { -ms-touch-action: manipulation; touch-action: manipulation; }
